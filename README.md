@@ -5,6 +5,13 @@ This framework is easy to use on any projects and platforms.
 
 For an in-depth look at the functionality - I also suggest <a href="https://github.com/DevsDaddy/GameShield/wiki">visiting the Wiki</a>
 
+❓**Why GameShield?**<br/>
+🔸Easy to install (only 4 steps basic installation);<br/>
+🔸Easy to configure each module;<br/>
+🔸Reporting system;<br/>
+🔸Lightweight;<br/>
+🔸Event-based and modular;
+
 ## Features
 [WIP]
 
