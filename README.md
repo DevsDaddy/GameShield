@@ -1,5 +1,5 @@
 # Unity Game Shield
-<!--<img src="https://github.com/DevsDaddy/GameShield/blob/main/DevsDaddy/Shared/EventFramework/Preview.png?raw=true" alt="Unity Event Framework" style="width: 100%" /><br/>-->
+<img src="https://github.com/DevsDaddy/GameShield/blob/wiki_visuals/Header.png?raw=true" alt="Unity Game Shield - Security and Anti-Cheat for Unity Games" style="width: 100%" /><br/>
 **Unity Game Sheild** is an open-source comprehensive suite of tools for your apps and games, including many **anti-cheat and securty tools**. 
 This framework is easy to use on any projects and platforms.
 
