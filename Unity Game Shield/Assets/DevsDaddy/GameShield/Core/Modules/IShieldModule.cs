@@ -6,7 +6,8 @@ namespace DevsDaddy.GameShield.Core.Modules
         /// Setup Module Configuration
         /// </summary>
         /// <param name="config"></param>
-        public void SetupModule(IShieldModuleConfig config = null);
+        /// <param name="reinitialize"></param>
+        public void SetupModule(IShieldModuleConfig config = null, bool reinitialize = false);
 
         /// <summary>
         /// Disconnect Module

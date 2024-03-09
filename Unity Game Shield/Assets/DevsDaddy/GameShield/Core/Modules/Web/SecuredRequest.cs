@@ -1,12 +1,12 @@
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
 
-namespace DevsDaddy.GameShield.Core.Modules.Memory
+namespace DevsDaddy.GameShield.Core.Modules.Web
 {
     /// <summary>
-    /// Memory Protector Module
+    /// Secured Web Requests Module
     /// </summary>
-    public class MemoryProtector : IShieldModule
+    public class SecuredRequest : IShieldModule
     {
         private Options _currentOptions = new Options();
         private bool _initialized = false;
@@ -57,9 +57,9 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         /// <returns></returns>
         public ModuleInfo GetModuleInfo() {
             return new ModuleInfo {
-                Name = "Memory Protector",
-                Description = "This module monitors and sends a notification if a user has attempted to change the value of a protected (SecuredType) types in memory.",
-                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#memory-protection"
+                Name = "Secured Requests",
+                Description = "This module allows you to exchange encrypted requests with the server with an additional layer of protection",
+                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#secured-requests"
             };
         }
         

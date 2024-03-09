@@ -1,12 +1,12 @@
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
 
-namespace DevsDaddy.GameShield.Core.Modules.Memory
+namespace DevsDaddy.GameShield.Core.Modules.GameSaves
 {
     /// <summary>
-    /// Memory Protector Module
+    /// Secured Game Saves Module
     /// </summary>
-    public class MemoryProtector : IShieldModule
+    public class SecuredSaves : IShieldModule
     {
         private Options _currentOptions = new Options();
         private bool _initialized = false;
@@ -57,9 +57,9 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         /// <returns></returns>
         public ModuleInfo GetModuleInfo() {
             return new ModuleInfo {
-                Name = "Memory Protector",
-                Description = "This module monitors and sends a notification if a user has attempted to change the value of a protected (SecuredType) types in memory.",
-                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#memory-protection"
+                Name = "Secured Saves",
+                Description = "This module allows you to save game states simply and quickly by encrypted serialization/deserialization of save files.",
+                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#secured-saves"
             };
         }
         

@@ -49,7 +49,7 @@ namespace DevsDaddy.GameShield.Core.Editor
             window.position = new Rect(Screen.width / 2, Screen.height / 2, minWindowSize.x, minWindowSize.y);
             window.Show();
             window.CenterOnMainWin();
-            window.SwitchTab(currentWizzardTab);
+            window.SwitchTab(WizzardTab.Welcome);
         }
 
         /// <summary>

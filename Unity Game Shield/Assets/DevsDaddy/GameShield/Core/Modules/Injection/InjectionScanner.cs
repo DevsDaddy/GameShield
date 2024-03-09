@@ -1,12 +1,12 @@
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
 
-namespace DevsDaddy.GameShield.Core.Modules.Memory
+namespace DevsDaddy.GameShield.Core.Modules.Injection
 {
     /// <summary>
-    /// Memory Protector Module
+    /// Injection Scanner Module
     /// </summary>
-    public class MemoryProtector : IShieldModule
+    public class InjectionScanner : IShieldModule
     {
         private Options _currentOptions = new Options();
         private bool _initialized = false;
@@ -57,9 +57,9 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         /// <returns></returns>
         public ModuleInfo GetModuleInfo() {
             return new ModuleInfo {
-                Name = "Memory Protector",
-                Description = "This module monitors and sends a notification if a user has attempted to change the value of a protected (SecuredType) types in memory.",
-                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#memory-protection"
+                Name = "Injection Scanner",
+                Description = "This module monitors the introduction of external assemblies into the application executable code and checks it against the list of trusted ones.",
+                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#injection-scanner"
             };
         }
         

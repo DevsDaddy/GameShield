@@ -1,12 +1,12 @@
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
 
-namespace DevsDaddy.GameShield.Core.Modules.Memory
+namespace DevsDaddy.GameShield.Core.Modules.Captcha
 {
     /// <summary>
-    /// Memory Protector Module
+    /// Rewarded Captcha Module
     /// </summary>
-    public class MemoryProtector : IShieldModule
+    public class RewardedCaptcha : IShieldModule
     {
         private Options _currentOptions = new Options();
         private bool _initialized = false;
@@ -57,9 +57,9 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         /// <returns></returns>
         public ModuleInfo GetModuleInfo() {
             return new ModuleInfo {
-                Name = "Memory Protector",
-                Description = "This module monitors and sends a notification if a user has attempted to change the value of a protected (SecuredType) types in memory.",
-                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#memory-protection"
+                Name = "Rewarded Captcha",
+                Description = "This module allows you to create client-side captchas when you suspect player cheating with a reward for completion.",
+                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#rewarded-captcha"
             };
         }
         

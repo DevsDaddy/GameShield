@@ -1,12 +1,12 @@
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
 
-namespace DevsDaddy.GameShield.Core.Modules.Memory
+namespace DevsDaddy.GameShield.Core.Modules.SpeedHack
 {
     /// <summary>
-    /// Memory Protector Module
+    /// SpeedHack Detector Module
     /// </summary>
-    public class MemoryProtector : IShieldModule
+    public class SpeedHackDetector : IShieldModule
     {
         private Options _currentOptions = new Options();
         private bool _initialized = false;
@@ -57,9 +57,9 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         /// <returns></returns>
         public ModuleInfo GetModuleInfo() {
             return new ModuleInfo {
-                Name = "Memory Protector",
-                Description = "This module monitors and sends a notification if a user has attempted to change the value of a protected (SecuredType) types in memory.",
-                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#memory-protection"
+                Name = "SpeedHack Detector",
+                Description = "The module allows you to track time acceleration attempts to change character speeds in-game, by monitoring the real time flow and frame time.",
+                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/Modules-Overview#speedhack-detector"
             };
         }
         
