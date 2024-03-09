@@ -8,6 +8,7 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
     /// </summary>
     public class MemoryProtector : IShieldModule
     {
+        public Options Config => _currentOptions;
         private Options _currentOptions = new Options();
         private bool _initialized = false;
 
@@ -67,7 +68,13 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         [System.Serializable]
         public class Options : IShieldModuleConfig
         {
-            
+            public float FloatEpsilon = 0.0001f;
+            public float Vector2Epsilon = 0.1f;
+            public float Vector3Epsilon = 0.1f;
+            public float Vector4Epsilon = 0.1f;
+            public float QuaternionEpsilon = 0.1f;
+            public float ColorEpsilon = 0.1f;
+            public byte Color32Epsilon = 1;
         }
     }
 }
