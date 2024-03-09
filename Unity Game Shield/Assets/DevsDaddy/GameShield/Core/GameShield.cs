@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using DevsDaddy.GameShield.Core.Constants;
+using DevsDaddy.GameShield.Core.Modules;
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
 using UnityEngine;
@@ -25,6 +27,10 @@ namespace DevsDaddy.GameShield.Core
         // States Flag
         private bool isQuitting = false;
         private bool isPaused = false;
+        private GameShieldConfig currentConfig = null;
+        
+        // Loaded Modules
+        private List<IShieldModule> loadedModules = new List<IShieldModule>();
 
         /// <summary>
         /// On GameShield Worker Awake
@@ -45,6 +51,11 @@ namespace DevsDaddy.GameShield.Core
         /// On GameShield Worker Start
         /// </summary>
         private void Start() {
+            // Get Configs
+            LoadConfig();
+            
+            // Initialize Modules
+            
             
             // Application Started Event
             EventMessenger.Main.Publish(new ApplicationStartedPayload {
@@ -103,10 +114,46 @@ namespace DevsDaddy.GameShield.Core
         }
 
         /// <summary>
+        /// Add Game Shield Module
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T AddModule<T>(IShieldModuleConfig config = null) where T : class, IShieldModule, new() {
+            T module = (T)loadedModules.Find(mod => mod.GetType() == typeof(T));
+            if (module != null) return module;
+            
+            // Create Module
+            module = new T();
+            module.SetupModule(config);
+            return module;
+        }
+
+        /// <summary>
+        /// Get Game Shield Module
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T GetModule<T>() where T : class, IShieldModule {
+            return (T)loadedModules.Find(mod => mod.GetType() == typeof(T));
+        }
+
+        /// <summary>
+        /// Remove Game Shield Module
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public bool RemoveModule<T>() where T : class, IShieldModule  {
+            T module = (T)loadedModules.Find(mod => mod.GetType() == typeof(T));
+            if (module == null) return false;
+            module.Disconnect();
+            loadedModules.Remove(module);
+            return true;
+        }
+
+        /// <summary>
         /// Add Coroutine
         /// </summary>
         /// <param name="coroutine"></param>
-        public void AddCoroutine(IEnumerator coroutine) {
+        private void AddCoroutine(IEnumerator coroutine) {
             StartCoroutine(coroutine);
         }
 
@@ -114,14 +161,14 @@ namespace DevsDaddy.GameShield.Core
         /// Remove Coroutine
         /// </summary>
         /// <param name="coroutine"></param>
-        public void RemoveCoroutine(IEnumerator coroutine) {
+        private void RemoveCoroutine(IEnumerator coroutine) {
             StopCoroutine(coroutine);
         }
 
         /// <summary>
         /// Remove All Coroutines
         /// </summary>
-        public void RemoveAllCoroutines() {
+        private void RemoveAllCoroutines() {
             StopAllCoroutines();
         }
 
@@ -135,6 +182,13 @@ namespace DevsDaddy.GameShield.Core
             GameShield shield = workerObject.AddComponent<GameShield>();
             _main = shield;
             return _main;
+        }
+
+        /// <summary>
+        /// Load Configuration
+        /// </summary>
+        private void LoadConfig() {
+            
         }
     }
 }
