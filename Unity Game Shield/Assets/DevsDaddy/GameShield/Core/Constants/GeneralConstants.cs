@@ -10,5 +10,6 @@ namespace DevsDaddy.GameShield.Core.Constants
         public const string CONFIG_PATH = "Config/GameShieldConfig";
         public const string EDITOR_WIZZARD_KEY = "IsGSWizzardShown";
         public const string EDITOR_WIZZARD_HEADER = "Wizzard/Header";
+        public const string EDITOR_WIZZARD_IMG_PATH = "Wizzard";
     }
 }

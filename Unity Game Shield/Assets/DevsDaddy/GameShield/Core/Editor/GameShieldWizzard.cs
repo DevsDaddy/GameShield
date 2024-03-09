@@ -20,11 +20,13 @@ namespace DevsDaddy.GameShield.Core.Editor
         private static WizzardTab currentWizzardTab = WizzardTab.Welcome;
 
         // Window Sizes
-        private Texture wizzardHeaderImage;
         private static readonly Vector2 minWindowSize = new Vector2(450, 600);
         private static readonly Vector2 maxWindowSize = new Vector2(550, 1024);
-        private GameShieldStyles styles = new GameShieldStyles();
         
+        // Styles and Images
+        private GameShieldStyles styles = new GameShieldStyles();
+        private Texture wizzardHeaderImage;
+
         // Modules
         private static string rootPath = "";
         private List<IShieldModule> availableModules = new List<IShieldModule>();
@@ -188,17 +190,20 @@ namespace DevsDaddy.GameShield.Core.Editor
         /// </summary>
         /// <param name="module"></param>
         private void DrawModule(IShieldModule module) {
+            ModuleInfo moduleInfo = module.GetModuleInfo();
             bool isModuleEnabled = IsModuleEnabled(module);
-            GUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal(styles.GetListElementStyle());
             GUILayout.BeginVertical();
-            if (GUILayout.Button(isModuleEnabled ? "Disable" : "Enable")) {
+            if (GUILayout.Button("", styles.GetSwitchButtonStyle(isModuleEnabled), GUILayout.ExpandWidth(false))) {
                 ToggleModule(module);
             }
-
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
-            GUILayout.Label($"<b>{module.GetModuleInfo().Name}</b>", styles.GetRegularTextStyle(TextAnchor.UpperLeft));
-            GUILayout.Label(module.GetModuleInfo().Description, styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            GUILayout.Label($"<b>{moduleInfo.Name}</b>", styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            GUILayout.Label(moduleInfo.Description, styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            if (GUILayout.Button("Show Documentation", styles.GetBasicButtonSyle(true), GUILayout.ExpandWidth(false))) {
+                Application.OpenURL(moduleInfo.DocumentationLink);
+            }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
         }

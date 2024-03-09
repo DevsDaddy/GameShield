@@ -4,5 +4,6 @@ namespace DevsDaddy.GameShield.Core.Modules
     {
         public string Name = "";
         public string Description = "";
+        public string DocumentationLink = "";
     }
 }

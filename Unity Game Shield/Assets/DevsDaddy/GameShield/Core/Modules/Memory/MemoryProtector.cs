@@ -28,7 +28,8 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         public ModuleInfo GetModuleInfo() {
             return new ModuleInfo {
                 Name = "Memory Protector",
-                Description = ""
+                Description = "This module monitors and sends a notification if a user has attempted to change the value of a protected (SecuredType) types in memory.",
+                DocumentationLink = "https://github.com/DevsDaddy/GameShield/wiki/"
             };
         }
     }
