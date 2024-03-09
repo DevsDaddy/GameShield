@@ -28,3 +28,5 @@ I am always ready to help you develop a strategy to protect your applications - 
 ## Support Me
 Like my libraries or assets?
 <a href="https://boosty.to/devsdaddy" target="_blank">Buy me a coffee</a>.
+
+![GameShield Wiki](https://github.com/DevsDaddy/GameShield/blob/wiki_visuals/footerImage.png?raw=true)
