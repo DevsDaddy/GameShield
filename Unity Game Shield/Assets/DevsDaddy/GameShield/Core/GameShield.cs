@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DevsDaddy.GameShield.Core.Constants;
 using DevsDaddy.GameShield.Core.Modules;
 using DevsDaddy.GameShield.Core.Payloads;
+using DevsDaddy.GameShield.Core.Utils;
 using DevsDaddy.Shared.EventFramework;
 using UnityEngine;
 
@@ -18,10 +19,7 @@ namespace DevsDaddy.GameShield.Core
     public class GameShield : MonoBehaviour
     {
         // GameShield General Instance
-        public static GameShield Main {
-            get => (_main != null) ? _main : CreateWorker();
-            private set => _main = value;
-        }
+        public static GameShield Main { get; private set; }
         private static GameShield _main = null;
         
         // States Flag
@@ -53,10 +51,7 @@ namespace DevsDaddy.GameShield.Core
         private void Start() {
             // Get Configs
             LoadConfig();
-            
-            // Initialize Modules
-            
-            
+
             // Application Started Event
             EventMessenger.Main.Publish(new ApplicationStartedPayload {
                 Time = DateTime.Now
@@ -125,7 +120,30 @@ namespace DevsDaddy.GameShield.Core
             // Create Module
             module = new T();
             module.SetupModule(config);
+            loadedModules.Add(module);
             return module;
+        }
+
+        /// <summary>
+        /// Add Game Shield Module by Name
+        /// </summary>
+        /// <param name="moduleType"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public IShieldModule AddModule(string moduleType, IShieldModuleConfig config = null) {
+            IShieldModule found = loadedModules.Find(mod => mod.GetType().Name == moduleType);
+            if (found != null) return found;
+            
+            // Create Module by Name
+            Type mType = ModuleManager.ByName(moduleType);
+            if (mType == null) {
+                Debug.LogError($"Failed to Initialize Module {moduleType}. Type is not found");
+                return null;
+            }
+            IShieldModule newModule = (IShieldModule)Activator.CreateInstance(mType);
+            newModule.SetupModule();
+            loadedModules.Add(newModule);
+            return null;
         }
 
         /// <summary>
@@ -173,21 +191,22 @@ namespace DevsDaddy.GameShield.Core
         }
 
         /// <summary>
-        /// Create Worker
-        /// </summary>
-        /// <returns></returns>
-        private static GameShield CreateWorker() {
-            if (_main != null) return _main;
-            GameObject workerObject = new GameObject(GeneralConstants.WORKER_OBJECT_NAME);
-            GameShield shield = workerObject.AddComponent<GameShield>();
-            _main = shield;
-            return _main;
-        }
-
-        /// <summary>
         /// Load Configuration
         /// </summary>
         private void LoadConfig() {
+            // Load Configuration
+            GameShieldConfig config = Resources.Load<GameShieldConfig>(GeneralConstants.CONFIG_PATH);
+            currentConfig = config ? config : ScriptableObject.CreateInstance<GameShieldConfig>();
+            Debug.Log($"GameShield Configuration Loaded. Available Modules: {currentConfig.AvailableModules.Count}");
+            
+            // Initialize Modules
+            if (currentConfig.AvailableModules.Count > 0) {
+                foreach (var module in currentConfig.AvailableModules) {
+                    Debug.Log($"Trying to Auto-Initialize Module: {module}");
+                    AddModule(module);
+                }
+            }
+            
             
         }
     }

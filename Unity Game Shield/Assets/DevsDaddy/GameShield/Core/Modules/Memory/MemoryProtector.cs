@@ -5,14 +5,31 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
     /// </summary>
     public class MemoryProtector : IShieldModule
     {
-        
-        
+
+        /// <summary>
+        /// Setup Module
+        /// </summary>
+        /// <param name="config"></param>
         public void SetupModule(IShieldModuleConfig config = null) {
-            throw new System.NotImplementedException();
+            
         }
 
+        /// <summary>
+        /// Disconnect Module
+        /// </summary>
         public void Disconnect() {
-            throw new System.NotImplementedException();
+            
+        }
+
+        /// <summary>
+        /// Get Module Information
+        /// </summary>
+        /// <returns></returns>
+        public ModuleInfo GetModuleInfo() {
+            return new ModuleInfo {
+                Name = "Memory Protector",
+                Description = ""
+            };
         }
     }
 }

@@ -12,5 +12,11 @@ namespace DevsDaddy.GameShield.Core.Modules
         /// Disconnect Module
         /// </summary>
         public void Disconnect();
+
+        /// <summary>
+        /// Get Module Info
+        /// </summary>
+        /// <returns></returns>
+        public ModuleInfo GetModuleInfo();
     }
 }

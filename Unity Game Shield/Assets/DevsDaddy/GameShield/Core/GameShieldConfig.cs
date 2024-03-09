@@ -9,6 +9,6 @@ namespace DevsDaddy.GameShield.Core
     public class GameShieldConfig : ScriptableObject
     {
         public int ConfigRevision = 0;
-        public List<IShieldModule> AvailableModules = new List<IShieldModule>();
+        public List<string> AvailableModules = new List<string>();
     }
 }

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d97d9ba471946eb831b3dea61bea50c, type: 3}
   m_Name: GameShieldConfig
   m_EditorClassIdentifier: 
-  ConfigRevision: 12
+  ConfigRevision: 23
+  AvailableModules: []

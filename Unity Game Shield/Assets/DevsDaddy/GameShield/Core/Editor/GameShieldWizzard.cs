@@ -97,6 +97,9 @@ namespace DevsDaddy.GameShield.Core.Editor
                 DrawCompleteSetup();
         }
 
+        /// <summary>
+        /// Draw Welcome Screen
+        /// </summary>
         private void DrawWelcomeScreen() {
             GUILayout.BeginVertical(styles.GetBodyAreaStyle(), GUILayout.ExpandHeight(true));
             scrollPos = GUILayout.BeginScrollView(scrollPos);
@@ -117,6 +120,9 @@ namespace DevsDaddy.GameShield.Core.Editor
             GUILayout.EndVertical();
         }
 
+        /// <summary>
+        /// Draw Config Editor
+        /// </summary>
         private void DrawConfigEditor() {
             GUILayout.BeginVertical(styles.GetBodyAreaStyle(), GUILayout.ExpandHeight(true));
             scrollPos = GUILayout.BeginScrollView(scrollPos);
@@ -130,6 +136,9 @@ namespace DevsDaddy.GameShield.Core.Editor
             GUILayout.EndVertical();
         }
 
+        /// <summary>
+        /// Draw Complete Setup
+        /// </summary>
         private void DrawCompleteSetup() {
             
         }
@@ -179,7 +188,47 @@ namespace DevsDaddy.GameShield.Core.Editor
         /// </summary>
         /// <param name="module"></param>
         private void DrawModule(IShieldModule module) {
-            GUILayout.Label(module.GetType().Name, styles.GetRegularTextStyle(TextAnchor.MiddleCenter));
+            bool isModuleEnabled = IsModuleEnabled(module);
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
+            if (GUILayout.Button(isModuleEnabled ? "Disable" : "Enable")) {
+                ToggleModule(module);
+            }
+
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical();
+            GUILayout.Label($"<b>{module.GetModuleInfo().Name}</b>", styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            GUILayout.Label(module.GetModuleInfo().Description, styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// Is Module Enabled
+        /// </summary>
+        /// <param name="module"></param>
+        /// <returns></returns>
+        private bool IsModuleEnabled(IShieldModule module) {
+            string found = currentConfig.AvailableModules.Find(mod => mod == module.GetType().ToString());
+            return (found != null);
+        }
+
+        /// <summary>
+        /// Toggle Module
+        /// </summary>
+        /// <param name="module"></param>
+        private bool ToggleModule(IShieldModule module) {
+            string found = currentConfig.AvailableModules.Find(mod => mod == module.GetType().ToString());
+            if (found == null) {
+                currentConfig.AvailableModules.Add(module.GetType().ToString());
+                Debug.Log($"GameShield Module {nameof(module)} is Enabled");
+                return true;
+            }
+            else {
+                currentConfig.AvailableModules.Remove(found);
+                Debug.Log($"GameShield Module {nameof(module)} is Disabled");
+                return false;
+            }
         }
 
         /// <summary>
@@ -291,7 +340,8 @@ namespace DevsDaddy.GameShield.Core.Editor
             }
             
             currentConfig = config;
-            Debug.Log($"Loaded Config: {currentConfig}");
+            Debug.Log($"GameShield Loaded Config: {currentConfig}");
+            Debug.Log($"GameShield Enabled Modules: {currentConfig.AvailableModules.Count}");
         }
     }
 }
