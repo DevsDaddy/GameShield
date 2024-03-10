@@ -35,7 +35,6 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         /// Disconnect Module
         /// </summary>
         public void Disconnect() {
-            
             // Fire Disconnected Complete
             EventMessenger.Main.Publish(new SecurityModuleDisconnected {
                 Module = this
@@ -67,7 +66,6 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         /// Initialize Module
         /// </summary>
         private void Initialize() {
-
             // Fire Initialization Complete
             EventMessenger.Main.Publish(new SecurityModuleInitialized {
                 Module = this
