@@ -29,6 +29,7 @@ namespace DevsDaddy.GameShield.Core
         
         // Loaded Modules
         private List<IShieldModule> loadedModules = new List<IShieldModule>();
+        private readonly Dictionary<string, IEnumerator> currentCoroutines = new Dictionary<string, IEnumerator>();
 
         /// <summary>
         /// On GameShield Worker Awake
@@ -54,6 +55,8 @@ namespace DevsDaddy.GameShield.Core
             LoadConfig();
 
             // Application Started Event
+            EventMessenger.Main.Subscribe<RequestCoroutine>(OnRequestCoroutine);
+            EventMessenger.Main.Subscribe<StopCoroutine>(OnStopCoroutine);
             EventMessenger.Main.Publish(new ApplicationStartedPayload {
                 Time = DateTime.Now
             });
@@ -96,6 +99,8 @@ namespace DevsDaddy.GameShield.Core
         /// On Instance Destroying
         /// </summary>
         private void OnDestroy() {
+            EventMessenger.Main.Unsubscribe<RequestCoroutine>(OnRequestCoroutine);
+            EventMessenger.Main.Unsubscribe<StopCoroutine>(OnStopCoroutine);
             EventMessenger.Main.Publish(new ApplicationClosePayload {
                 IsQuitting = isQuitting,
                 Time = DateTime.Now
@@ -181,25 +186,37 @@ namespace DevsDaddy.GameShield.Core
         }
 
         /// <summary>
-        /// Add Coroutine
+        /// On Coroutine Requested
         /// </summary>
-        /// <param name="coroutine"></param>
-        private void AddCoroutine(IEnumerator coroutine) {
-            StartCoroutine(coroutine);
+        /// <param name="payload"></param>
+        private void OnRequestCoroutine(RequestCoroutine payload) {
+            if (currentCoroutines.ContainsKey(payload.Id)) {
+                StopCoroutine(currentCoroutines[payload.Id]);
+                currentCoroutines[payload.Id] = payload.Coroutine;
+            }
+            else {
+                currentCoroutines.Add(payload.Id, payload.Coroutine);
+            }
+
+            StartCoroutine(currentCoroutines[payload.Id]);
         }
 
         /// <summary>
-        /// Remove Coroutine
+        /// On Stop Coroutine Requested
         /// </summary>
-        /// <param name="coroutine"></param>
-        private void RemoveCoroutine(IEnumerator coroutine) {
-            StopCoroutine(coroutine);
+        /// <param name="payload"></param>
+        private void OnStopCoroutine(StopCoroutine payload) {
+            if (!currentCoroutines.ContainsKey(payload.Id))
+                return;
+            
+            StopCoroutine(currentCoroutines[payload.Id]);
         }
 
         /// <summary>
         /// Remove All Coroutines
         /// </summary>
         private void RemoveAllCoroutines() {
+            currentCoroutines.Clear();
             StopAllCoroutines();
         }
 

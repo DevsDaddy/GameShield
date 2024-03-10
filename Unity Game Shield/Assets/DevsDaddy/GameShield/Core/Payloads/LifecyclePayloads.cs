@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DevsDaddy.Shared.EventFramework.Core.Payloads;
 
 namespace DevsDaddy.GameShield.Core.Payloads
@@ -33,5 +34,18 @@ namespace DevsDaddy.GameShield.Core.Payloads
     public class ApplicationFixedLoopUpdated : IPayload
     {
         public float DeltaTime;
+    }
+
+    [System.Serializable]
+    public class RequestCoroutine : IPayload
+    {
+        public string Id;
+        public IEnumerator Coroutine;
+    }
+
+    [System.Serializable]
+    public class StopCoroutine : IPayload
+    {
+        public string Id;
     }
 }
