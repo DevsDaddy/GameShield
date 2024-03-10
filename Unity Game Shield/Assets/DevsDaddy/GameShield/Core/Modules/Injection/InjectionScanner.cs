@@ -464,9 +464,6 @@ namespace DevsDaddy.GameShield.Core.Modules.Injection
         
         // Module Options Configuration
         [System.Serializable]
-        public class Options : IShieldModuleConfig
-        {
-            
-        }
+        public class Options : IShieldModuleConfig { }
     }
 }
