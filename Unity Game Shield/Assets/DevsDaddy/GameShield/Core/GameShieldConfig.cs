@@ -12,5 +12,6 @@ namespace DevsDaddy.GameShield.Core
         public List<string> AvailableModules = new List<string>();
 
         public bool PauseOnApplicationTerminated = false;
+        public string DeveloperKey = "";
     }
 }

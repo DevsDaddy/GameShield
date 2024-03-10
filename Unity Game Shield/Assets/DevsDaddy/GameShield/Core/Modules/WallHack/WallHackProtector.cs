@@ -1,5 +1,6 @@
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
+using UnityEngine;
 
 namespace DevsDaddy.GameShield.Core.Modules.WallHack
 {
@@ -8,7 +9,7 @@ namespace DevsDaddy.GameShield.Core.Modules.WallHack
     /// </summary>
     public class WallHackProtector : IShieldModule
     {
-        private Options _currentOptions = new Options();
+        private Options _currentOptions;
         private bool _initialized = false;
         private bool _isPaused = false;
 
@@ -18,6 +19,8 @@ namespace DevsDaddy.GameShield.Core.Modules.WallHack
         /// <param name="config"></param>
         /// <param name="reinitialize"></param>
         public void SetupModule(IShieldModuleConfig config = null, bool reinitialize = false) {
+            if (!Application.isPlaying) return;
+            
             // Change Configuration
             _currentOptions = (Options)config ?? new Options();
             EventMessenger.Main.Publish(new SecurityModuleConfigChanged {

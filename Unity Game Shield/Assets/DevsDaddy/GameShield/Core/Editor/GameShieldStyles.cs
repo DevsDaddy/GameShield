@@ -71,6 +71,28 @@ namespace DevsDaddy.GameShield.Core.Editor
         }
 
         /// <summary>
+        /// Get Basic Field Style
+        /// </summary>
+        /// <returns></returns>
+        public GUIStyle GetBasicFieldStyle() {
+            Color[] normalColors = {new Color(0.3f, 0.3f, 0.3f, 1f), new Color(0.2f, 0.2f, 0.2f, 1f) };
+            
+            GUIStyle style = new GUIStyle();
+            style.alignment = TextAnchor.MiddleLeft;
+            style.padding = new RectOffset(20, 20, 10, 10);
+            style.border = new RectOffset(1, 1, 1, 1);
+            style.fontSize = 14;
+            style.fontStyle = FontStyle.Bold;
+            style.normal.textColor = Color.white;
+            style.focused.textColor = Color.white;
+            style.hover.textColor = Color.white;
+            style.normal.background = MakeTex( 2, 2, normalColors[0]);
+            style.hover.background = MakeTex( 2, 2, normalColors[1]);
+            style.focused.background = MakeTex( 2, 2, normalColors[1]);
+            return style;
+        }
+
+        /// <summary>
         /// Get Switch Button Style
         /// </summary>
         /// <returns></returns>

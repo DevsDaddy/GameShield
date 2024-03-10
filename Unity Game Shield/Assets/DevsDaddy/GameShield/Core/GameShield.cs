@@ -173,6 +173,14 @@ namespace DevsDaddy.GameShield.Core
         }
 
         /// <summary>
+        /// Get Developer Key
+        /// </summary>
+        /// <returns></returns>
+        public string GetDeveloperKey() {
+            return currentConfig.DeveloperKey;
+        }
+
+        /// <summary>
         /// Add Coroutine
         /// </summary>
         /// <param name="coroutine"></param>

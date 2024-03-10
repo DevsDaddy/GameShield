@@ -212,6 +212,13 @@ namespace DevsDaddy.GameShield.Core.Editor
         /// Draw General Configs
         /// </summary>
         private void DrawGeneralConfigs() {
+            // Developer Key Module
+            DrawInputField(GeneralStrings.DEV_KEY_DESC, GeneralStrings.DEV_KEY_TITLE, currentConfig.DeveloperKey,
+                key => {
+                    currentConfig.DeveloperKey = key;
+                });
+            GUILayout.Space(10);
+            
             // Auto-Pause Modules
             DrawToggleListElement(GeneralStrings.AUTO_PAUSE_ON_HEADER, GeneralStrings.AUTO_PAUSE_ON_DESC, currentConfig.PauseOnApplicationTerminated,
                 () => {
@@ -219,6 +226,27 @@ namespace DevsDaddy.GameShield.Core.Editor
                 });
             GUILayout.Space(10);
             
+        }
+
+        /// <summary>
+        /// Draw Input Field
+        /// </summary>
+        /// <param name="placeholder"></param>
+        /// <param name="label"></param>
+        /// <param name="variable"></param>
+        /// <param name="onComplete"></param>
+        private void DrawInputField(string placeholder, string label, string variable, Action<string> onComplete = null) {
+            string newText = "";
+            GUILayout.BeginHorizontal(styles.GetListElementStyle());
+            GUILayout.BeginVertical();
+            GUILayout.Label($"<b>{label}</b>", styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            newText = GUILayout.TextField(variable, 64, styles.GetBasicFieldStyle());
+            GUILayout.Label($"<color=#2f2f2f>{placeholder}</color>", styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            
+            if(newText != variable)
+                onComplete?.Invoke(newText);
         }
 
         /// <summary>
@@ -383,15 +411,19 @@ namespace DevsDaddy.GameShield.Core.Editor
             GameShieldConfig config = Resources.Load<GameShieldConfig>(GeneralConstants.CONFIG_PATH);
             if (config == null) {
                 currentConfig = CreateInstance<GameShieldConfig>();
+                currentConfig.DeveloperKey = Generator.GenerateRandomKey(32);
                 string pathToConfig = $"{rootPath}Resources/{GeneralConstants.CONFIG_PATH}.asset";
                 AssetDatabase.CreateAsset(currentConfig, pathToConfig);
                 AssetDatabase.Refresh();
                 Debug.Log($"{GeneralStrings.LOG_PREFIX} Config Created At: {pathToConfig}");
-                //currentConfig = Resources.Load<GameShieldConfig>(GeneralConstants.CONFIG_PATH);
                 return;
             }
-            
+
             currentConfig = config;
+            
+            // Generate key if Null
+            if(string.IsNullOrEmpty(currentConfig.DeveloperKey)) 
+                currentConfig.DeveloperKey = Generator.GenerateRandomKey(32);
             Debug.Log($"{GeneralStrings.LOG_PREFIX} Loaded Config: {currentConfig}");
             Debug.Log($"{GeneralStrings.LOG_PREFIX} Enabled Modules: {currentConfig.AvailableModules.Count}");
         }

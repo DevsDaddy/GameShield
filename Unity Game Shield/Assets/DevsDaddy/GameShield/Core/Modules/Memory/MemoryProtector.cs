@@ -1,5 +1,6 @@
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
+using UnityEngine;
 
 namespace DevsDaddy.GameShield.Core.Modules.Memory
 {
@@ -9,7 +10,7 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
     public class MemoryProtector : IShieldModule
     {
         public Options Config => _currentOptions;
-        private Options _currentOptions = new Options();
+        private Options _currentOptions;
         private bool _initialized = false;
         private bool _isPaused = false;
 
@@ -19,6 +20,8 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory
         /// <param name="config"></param>
         /// <param name="reinitialize"></param>
         public void SetupModule(IShieldModuleConfig config = null, bool reinitialize = false) {
+            if (!Application.isPlaying) return;
+            
             // Change Configuration
             _currentOptions = (Options)config ?? new Options();
             EventMessenger.Main.Publish(new SecurityModuleConfigChanged {
