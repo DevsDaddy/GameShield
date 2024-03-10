@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d97d9ba471946eb831b3dea61bea50c, type: 3}
   m_Name: GameShieldConfig
   m_EditorClassIdentifier: 
-  ConfigRevision: 51
+  ConfigRevision: 59
   AvailableModules:
   - DevsDaddy.GameShield.Core.Modules.Memory.MemoryProtector
   - DevsDaddy.GameShield.Core.Modules.Web.SecuredRequest
   - DevsDaddy.GameShield.Core.Modules.WallHack.WallHackProtector
+  PauseOnApplicationTerminated: 0

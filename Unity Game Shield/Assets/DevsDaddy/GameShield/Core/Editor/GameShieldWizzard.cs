@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using DevsDaddy.GameShield.Core.Constants;
 using DevsDaddy.GameShield.Core.Modules;
 using DevsDaddy.GameShield.Core.Utils;
@@ -128,11 +127,12 @@ namespace DevsDaddy.GameShield.Core.Editor
         private void DrawConfigEditor() {
             GUILayout.BeginVertical(styles.GetBodyAreaStyle(), GUILayout.ExpandHeight(true));
             scrollPos = GUILayout.BeginScrollView(scrollPos);
-            GUILayout.Label("MODULES", styles.GetSubHeaderStyle());
-            DrawModules();
+            GUILayout.Label("GENERAL", styles.GetSubHeaderStyle());
+            DrawGeneralConfigs();
             
             GUILayout.Space(20);
             GUILayout.Label("MODULES", styles.GetSubHeaderStyle());
+            DrawModules();
             
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
@@ -175,7 +175,7 @@ namespace DevsDaddy.GameShield.Core.Editor
             // Get Available Modules
             if (availableModules.Count < 1) {
                 availableModules = ModuleManager.GetAllModules();
-                Debug.Log($"Loading All Available Modules. Found Modules: {availableModules.Count}");
+                Debug.Log($"{GeneralStrings.LOG_PREFIX} Loading All Available Modules. Found Modules: {availableModules.Count}");
             }
 
             if (availableModules.Count > 0)
@@ -209,6 +209,40 @@ namespace DevsDaddy.GameShield.Core.Editor
         }
 
         /// <summary>
+        /// Draw General Configs
+        /// </summary>
+        private void DrawGeneralConfigs() {
+            // Auto-Pause Modules
+            DrawToggleListElement(GeneralStrings.AUTO_PAUSE_ON_HEADER, GeneralStrings.AUTO_PAUSE_ON_DESC, currentConfig.PauseOnApplicationTerminated,
+                () => {
+                    currentConfig.PauseOnApplicationTerminated = !currentConfig.PauseOnApplicationTerminated;
+                });
+            GUILayout.Space(10);
+            
+        }
+
+        /// <summary>
+        /// Draw Toggle List Element
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="description"></param>
+        /// <param name="toggleVariable"></param>
+        /// <param name="onToggle"></param>
+        private void DrawToggleListElement(string title, string description, bool toggleVariable, Action onToggle) {
+            GUILayout.BeginHorizontal(styles.GetListElementStyle());
+            GUILayout.BeginVertical();
+            if (GUILayout.Button("", styles.GetSwitchButtonStyle(toggleVariable), GUILayout.ExpandWidth(false))) {
+                onToggle?.Invoke();
+            }
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical();
+            GUILayout.Label(title, styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            GUILayout.Label(description, styles.GetRegularTextStyle(TextAnchor.UpperLeft));
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
         /// Is Module Enabled
         /// </summary>
         /// <param name="module"></param>
@@ -226,12 +260,12 @@ namespace DevsDaddy.GameShield.Core.Editor
             string found = currentConfig.AvailableModules.Find(mod => mod == module.GetType().ToString());
             if (found == null) {
                 currentConfig.AvailableModules.Add(module.GetType().ToString());
-                Debug.Log($"GameShield Module {nameof(module)} is Enabled");
+                Debug.Log($"{GeneralStrings.LOG_PREFIX} Module {nameof(module)} is Enabled");
                 return true;
             }
             else {
                 currentConfig.AvailableModules.Remove(found);
-                Debug.Log($"GameShield Module {nameof(module)} is Disabled");
+                Debug.Log($"{GeneralStrings.LOG_PREFIX} Module {nameof(module)} is Disabled");
                 return false;
             }
         }
@@ -240,8 +274,20 @@ namespace DevsDaddy.GameShield.Core.Editor
         /// Complete Setup
         /// </summary>
         private void CompleteSetup() {
+            // Save Configs
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            
+            // Add GameObject on Scene
+            GameShield worker = FindObjectOfType<GameShield>();
+            if (worker == null) {
+                GameObject workerObject = new GameObject("__GAME_SHIELD__");
+                workerObject.AddComponent<GameShield>();
+                workerObject.transform.SetAsFirstSibling();
+                Debug.Log($"{GeneralStrings.LOG_PREFIX} Added Worker GameObject at Current Scene");
+            }
+            
+            // Close Window
             Close();
         }
 
@@ -339,14 +385,14 @@ namespace DevsDaddy.GameShield.Core.Editor
                 string pathToConfig = $"{rootPath}Resources/{GeneralConstants.CONFIG_PATH}.asset";
                 AssetDatabase.CreateAsset(currentConfig, pathToConfig);
                 AssetDatabase.Refresh();
-                Debug.Log($"GameShield Config Created At: {pathToConfig}");
+                Debug.Log($"{GeneralStrings.LOG_PREFIX} Config Created At: {pathToConfig}");
                 //currentConfig = Resources.Load<GameShieldConfig>(GeneralConstants.CONFIG_PATH);
                 return;
             }
             
             currentConfig = config;
-            Debug.Log($"GameShield Loaded Config: {currentConfig}");
-            Debug.Log($"GameShield Enabled Modules: {currentConfig.AvailableModules.Count}");
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Loaded Config: {currentConfig}");
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Enabled Modules: {currentConfig.AvailableModules.Count}");
         }
     }
 }

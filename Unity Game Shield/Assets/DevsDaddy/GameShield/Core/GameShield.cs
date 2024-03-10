@@ -43,6 +43,7 @@ namespace DevsDaddy.GameShield.Core
             transform.SetParent(null);
             DontDestroyOnLoad(this);
             gameObject.name = GeneralConstants.WORKER_OBJECT_NAME;
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Worker Awake");
         }
 
         /// <summary>
@@ -56,6 +57,7 @@ namespace DevsDaddy.GameShield.Core
             EventMessenger.Main.Publish(new ApplicationStartedPayload {
                 Time = DateTime.Now
             });
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Worker Started");
         }
 
         /// <summary>
@@ -106,6 +108,7 @@ namespace DevsDaddy.GameShield.Core
         private void OnApplicationQuit() {
             RemoveAllCoroutines();
             isQuitting = true;
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Application Quit Process.");
         }
 
         /// <summary>
@@ -121,6 +124,7 @@ namespace DevsDaddy.GameShield.Core
             module = new T();
             module.SetupModule(config);
             loadedModules.Add(module);
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Manual Module added: {module.GetType().Name}");
             return module;
         }
 
@@ -137,7 +141,7 @@ namespace DevsDaddy.GameShield.Core
             // Create Module by Name
             Type mType = ModuleManager.ByName(moduleType);
             if (mType == null) {
-                Debug.LogError($"Failed to Initialize Module {moduleType}. Type is not found");
+                Debug.LogError($"{GeneralStrings.LOG_PREFIX} Failed to Initialize Module {moduleType}. Type is not found");
                 return null;
             }
             IShieldModule newModule = (IShieldModule)Activator.CreateInstance(mType);
@@ -164,6 +168,7 @@ namespace DevsDaddy.GameShield.Core
             if (module == null) return false;
             module.Disconnect();
             loadedModules.Remove(module);
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Module Removed: {module.GetType().Name}");
             return true;
         }
 
@@ -197,17 +202,25 @@ namespace DevsDaddy.GameShield.Core
             // Load Configuration
             GameShieldConfig config = Resources.Load<GameShieldConfig>(GeneralConstants.CONFIG_PATH);
             currentConfig = config ? config : ScriptableObject.CreateInstance<GameShieldConfig>();
-            Debug.Log($"GameShield Configuration Loaded. Available Modules: {currentConfig.AvailableModules.Count}");
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Configuration Loaded. Available Modules: {currentConfig.AvailableModules.Count}");
             
             // Initialize Modules
             if (currentConfig.AvailableModules.Count > 0) {
                 foreach (var module in currentConfig.AvailableModules) {
-                    Debug.Log($"Trying to Auto-Initialize Module: {module}");
+                    Debug.Log($"{GeneralStrings.LOG_PREFIX} Trying to Auto-Initialize Module: {module}");
                     AddModule(module);
                 }
             }
             
-            
+            // Auto-Pause for Application Terminated
+            if (currentConfig.PauseOnApplicationTerminated && loadedModules.Count > 0) {
+                EventMessenger.Main.Subscribe<ApplicationPausePayload>(payload => {
+                    foreach (var module in loadedModules) {
+                        module.PauseDetector(payload.IsPaused);
+                        Debug.Log($"{GeneralStrings.LOG_PREFIX} Toggle Pause for Module: {module}, In-State: {payload.IsPaused}");
+                    }
+                });
+            }
         }
     }
 }
