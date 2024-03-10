@@ -288,6 +288,7 @@ namespace DevsDaddy.GameShield.Core.Editor
             }
             
             // Close Window
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} Setup <color=green><b>is Done</b></color>");
             Close();
         }
 
