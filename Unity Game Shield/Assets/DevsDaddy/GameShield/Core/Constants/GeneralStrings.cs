@@ -13,5 +13,8 @@ namespace DevsDaddy.GameShield.Core.Constants
         
         public const string DEV_KEY_TITLE = "Developer Key:";
         public const string DEV_KEY_DESC = "Developer key used for encryption at different modules. Please, do not share it.";
+        
+        // Report Email
+        public const string REPORT_EMAIL = "iliya-sdt@yandex.ru";
     }
 }
