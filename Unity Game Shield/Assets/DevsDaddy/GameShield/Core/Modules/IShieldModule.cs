@@ -15,6 +15,18 @@ namespace DevsDaddy.GameShield.Core.Modules
         public void Disconnect();
 
         /// <summary>
+        /// Pause Detector
+        /// </summary>
+        /// <param name="isPaused"></param>
+        public void PauseDetector(bool isPaused);
+
+        /// <summary>
+        /// Is Paused
+        /// </summary>
+        /// <returns></returns>
+        public bool IsPaused();
+
+        /// <summary>
         /// Get Module Info
         /// </summary>
         /// <returns></returns>

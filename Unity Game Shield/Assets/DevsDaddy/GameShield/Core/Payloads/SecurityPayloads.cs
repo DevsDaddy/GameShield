@@ -30,4 +30,11 @@ namespace DevsDaddy.GameShield.Core.Payloads
     {
         public IShieldModule Module;
     }
+
+    [System.Serializable]
+    public class SecurityModulePause : IPayload
+    {
+        public IShieldModule Module;
+        public bool IsPaused;
+    }
 }

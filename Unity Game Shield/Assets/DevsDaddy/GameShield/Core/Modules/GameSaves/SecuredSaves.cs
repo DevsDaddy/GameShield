@@ -10,6 +10,7 @@ namespace DevsDaddy.GameShield.Core.Modules.GameSaves
     {
         private Options _currentOptions = new Options();
         private bool _initialized = false;
+        private bool _isPaused = false;
 
         /// <summary>
         /// Setup Module
@@ -38,6 +39,27 @@ namespace DevsDaddy.GameShield.Core.Modules.GameSaves
             EventMessenger.Main.Publish(new SecurityModuleDisconnected {
                 Module = this
             });
+        }
+        
+        /// <summary>
+        /// Toggle Pause for Current Detector
+        /// </summary>
+        /// <param name="isPaused"></param>
+        public void PauseDetector(bool isPaused) {
+            if(isPaused == _isPaused) return;
+            _isPaused = isPaused;
+            EventMessenger.Main.Publish(new SecurityModulePause {
+                Module = this,
+                IsPaused = _isPaused
+            });
+        }
+
+        /// <summary>
+        /// Check if Detector Paused
+        /// </summary>
+        /// <returns></returns>
+        public bool IsPaused() {
+            return _isPaused;
         }
 
         /// <summary>
