@@ -13,5 +13,14 @@ namespace DevsDaddy.GameShield.Core
 
         public bool PauseOnApplicationTerminated = false;
         public string DeveloperKey = "";
+        public string BackendURL = "";
+        public DeveloperContacts Contacts = new DeveloperContacts();
+    }
+
+    [System.Serializable]
+    public class DeveloperContacts
+    {
+        public string Email = "";
+        public string Website = "";
     }
 }

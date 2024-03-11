@@ -142,7 +142,28 @@ namespace DevsDaddy.GameShield.Core.Editor
         /// Draw Complete Setup
         /// </summary>
         private void DrawCompleteSetup() {
+            GUILayout.BeginVertical(styles.GetBodyAreaStyle(), GUILayout.ExpandHeight(true));
+            scrollPos = GUILayout.BeginScrollView(scrollPos);
+            GUILayout.Label("CONTACTS", styles.GetSubHeaderStyle());
             
+            // Developer Email
+            DrawInputField(GeneralStrings.DEV_EMAIL_DESC, GeneralStrings.DEV_EMAIL_TITLE, currentConfig.Contacts.Email,
+                key => {
+                    currentConfig.Contacts.Email = key;
+                });
+
+            // Developer Contacts
+            DrawInputField(GeneralStrings.DEV_WEBSITE_DESC, GeneralStrings.DEV_WEBSITE_TITLE, currentConfig.Contacts.Website,
+                key => {
+                    currentConfig.Contacts.Website = key;
+                });
+            GUILayout.Space(20);
+            
+            GUILayout.Label("AND NOW IS DONE", styles.GetSubHeaderStyle());
+            GUILayout.Label("Your GameShield is now ready to go.\n\n<b>Do not remove the GAME_SHIELD object from the scene!</b>", styles.GetRegularTextStyle());
+            
+            GUILayout.EndScrollView();
+            GUILayout.EndVertical();
         }
 
         /// <summary>
@@ -217,15 +238,19 @@ namespace DevsDaddy.GameShield.Core.Editor
                 key => {
                     currentConfig.DeveloperKey = key;
                 });
-            GUILayout.Space(10);
-            
+
+            // GameShield Backend URL
+            DrawInputField(GeneralStrings.BACK_URL_DESC, GeneralStrings.BACK_URL_TITLE, currentConfig.BackendURL,
+                key => {
+                    currentConfig.BackendURL = key;
+                });
+
             // Auto-Pause Modules
             DrawToggleListElement(GeneralStrings.AUTO_PAUSE_ON_HEADER, GeneralStrings.AUTO_PAUSE_ON_DESC, currentConfig.PauseOnApplicationTerminated,
                 () => {
                     currentConfig.PauseOnApplicationTerminated = !currentConfig.PauseOnApplicationTerminated;
                 });
             GUILayout.Space(10);
-            
         }
 
         /// <summary>

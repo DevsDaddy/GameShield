@@ -13,6 +13,13 @@ namespace DevsDaddy.GameShield.Core.Constants
         
         public const string DEV_KEY_TITLE = "Developer Key:";
         public const string DEV_KEY_DESC = "Developer key used for encryption at different modules. Please, do not share it.";
+        public const string DEV_EMAIL_TITLE = "Developer Email:";
+        public const string DEV_EMAIL_DESC = "Used for contacts in Cheating Reporter";
+        public const string DEV_WEBSITE_TITLE = "Developer Website:";
+        public const string DEV_WEBSITE_DESC = "Used for contacts in Cheating Reporter";
+        
+        public const string BACK_URL_TITLE = "Backend URL:";
+        public const string BACK_URL_DESC = "Enter your backend URL to enable server-side functional";
         
         // Report Email
         public const string REPORT_EMAIL = "iliya-sdt@yandex.ru";
