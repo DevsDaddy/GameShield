@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using DevsDaddy.GameShield.Core.Constants;
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
@@ -14,12 +16,10 @@ namespace DevsDaddy.GameShield.Core.Modules.Teleport
         private bool _initialized = false;
         private bool _isPaused = false;
         
-        private Transform _target;
-        private float availableSpeed = 3f;
         private float timeToCheck = 1f;
-        private Vector3 lastPosition;
-
         private float interval = 1f;
+
+        private List<TeleportTargetChecker> _targets = new List<TeleportTargetChecker>();
 
         /// <summary>
         /// Setup Module
@@ -45,16 +45,12 @@ namespace DevsDaddy.GameShield.Core.Modules.Teleport
         /// Initialize Module
         /// </summary>
         private void Initialize() {
-            _target = _currentOptions.Target;
-            availableSpeed = _currentOptions.AvailableSpeed;
+            _targets = _currentOptions.targets;
             interval = _currentOptions.Interval;
             timeToCheck = interval;
 
-            if (_target != null)
-                lastPosition = _target.transform.position;
-            
-            if(_target == null)
-                Debug.LogWarning($"{GeneralStrings.LOG_PREFIX} No Target setup to Teleport Detector. Please, use SetupTarget() to initialize detection.");
+            if(_targets.Count < 1)
+                Debug.LogWarning($"{GeneralStrings.LOG_PREFIX} No Target setup to Teleport Detector. Please, use AddTarget() to initialize detection.");
 
             _isPaused = false;
 
@@ -66,16 +62,23 @@ namespace DevsDaddy.GameShield.Core.Modules.Teleport
         }
 
         /// <summary>
-        /// Setup Target
+        /// Add Teleport Target
         /// </summary>
         /// <param name="target"></param>
-        /// <param name="maxSpeed"></param>
-        /// <param name="maxInterval"></param>
-        public void SetupTarget(Transform target, float maxSpeed = 30f, float maxInterval = 1f) {
-            _target = target;
-            availableSpeed = maxSpeed;
-            interval = maxInterval;
-            timeToCheck = maxInterval;
+        public void AddTarget(TeleportTargetChecker target) {
+            if(_targets.Contains(target)) return;
+            _targets.Add(target);
+            interval = _currentOptions.Interval;
+            timeToCheck = _currentOptions.Interval;
+        }
+
+        /// <summary>
+        /// Remove Target
+        /// </summary>
+        /// <param name="target"></param>
+        public void RemoveTarget(TeleportTargetChecker target) {
+            if (_targets.Contains(target))
+                _targets.Remove(target);
         }
 
         /// <summary>
@@ -93,25 +96,29 @@ namespace DevsDaddy.GameShield.Core.Modules.Teleport
         /// </summary>
         /// <param name="payload"></param>
         private void OnGameLoopUpdate(ApplicationLoopUpdated payload) {
-            if(_isPaused || _target == null) return;
+            if(_isPaused || _targets.Count < 1) return;
             
             if (timeToCheck <= 0f)
             {
-                if (lastPosition != Vector3.zero) {
-                    float distance = Vector3.Distance(lastPosition, _target.position);
-                    if (distance > availableSpeed)
-                    {
-                        EventMessenger.Main.Publish(new SecurityWarningPayload {
-                            Code = 422,
-                            Message = TeleportWarnings.TeleportCheating,
-                            IsCritical = true,
-                            Module = this
-                        });
-                        PauseDetector(true);
+                foreach (var target in _targets) {
+                    if(target == null || target.Target == null) continue;
+                    if (target.LastPosition != Vector3.zero) {
+                        float distance = Vector3.Distance(target.LastPosition, target.Target.position);
+                        if (distance > target.MaxSpeed)
+                        {
+                            EventMessenger.Main.Publish(new SecurityWarningPayload {
+                                Code = 422,
+                                Message = TeleportWarnings.TeleportCheating,
+                                IsCritical = true,
+                                Module = this
+                            });
+                            PauseDetector(true);
+                        }
                     }
-                }
 
-                lastPosition = _target.position;
+                    target.LastPosition = target.Target.position;
+                }
+                
                 timeToCheck = interval;
             }
             else
@@ -157,8 +164,7 @@ namespace DevsDaddy.GameShield.Core.Modules.Teleport
         [System.Serializable]
         public class Options : IShieldModuleConfig
         {
-            public Transform Target;
-            public float AvailableSpeed = 30f;
+            public List<TeleportTargetChecker> targets = new List<TeleportTargetChecker>();
             public float Interval = 1f;
         }
     }
