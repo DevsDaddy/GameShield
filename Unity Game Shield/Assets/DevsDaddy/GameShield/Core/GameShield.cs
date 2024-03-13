@@ -178,6 +178,18 @@ namespace DevsDaddy.GameShield.Core
         }
 
         /// <summary>
+        /// Remove All Modules
+        /// </summary>
+        public void RemoveAllModules() {
+            foreach (var module in loadedModules) {
+                module.Disconnect();
+            }
+            
+            loadedModules.Clear();
+            Debug.Log($"{GeneralStrings.LOG_PREFIX} All Modules Removed.");
+        }
+
+        /// <summary>
         /// Get Developer Key
         /// </summary>
         /// <returns></returns>
@@ -218,6 +230,35 @@ namespace DevsDaddy.GameShield.Core
         private void RemoveAllCoroutines() {
             currentCoroutines.Clear();
             StopAllCoroutines();
+        }
+
+        /// <summary>
+        /// Load Configuration
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="cleanupModules"></param>
+        public void LoadConfig(GameShieldConfig config, bool cleanupModules = false) {
+            if (currentConfig != null && cleanupModules) {
+                RemoveAllModules();
+            }
+
+            currentConfig = config;
+            if (currentConfig.AvailableModules.Count > 0) {
+                foreach (var module in currentConfig.AvailableModules) {
+                    Debug.Log($"{GeneralStrings.LOG_PREFIX} Trying to Auto-Initialize Module: {module}");
+                    AddModule(module);
+                }
+            }
+            
+            // Auto-Pause for Application Terminated
+            if (currentConfig.PauseOnApplicationTerminated && loadedModules.Count > 0) {
+                EventMessenger.Main.Subscribe<ApplicationPausePayload>(payload => {
+                    foreach (var module in loadedModules) {
+                        module.PauseDetector(payload.IsPaused);
+                        Debug.Log($"{GeneralStrings.LOG_PREFIX} Toggle Pause for Module: {module}, In-State: {payload.IsPaused}");
+                    }
+                });
+            }
         }
 
         /// <summary>
