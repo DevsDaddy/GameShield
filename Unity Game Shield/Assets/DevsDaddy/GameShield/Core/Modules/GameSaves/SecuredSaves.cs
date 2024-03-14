@@ -200,7 +200,7 @@ namespace DevsDaddy.GameShield.Core.Modules.GameSaves
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
-        public ICryptoProvider GetCryptoProvider(ICryptoProvider provider) {
+        public ICryptoProvider GetCryptoProvider() {
             return _currentProvider;
         }
 
