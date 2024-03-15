@@ -59,8 +59,8 @@ I recommend two-way protection - on the client and on the server, including full
 
 I am always ready to help you develop a strategy to protect your applications - <a href="mailto:iliya-sdt@yandex.ru">just contact me</a>.
 
-## Support Me
-Like my libraries or assets?
-<a href="https://boosty.to/devsdaddy" target="_blank">Buy me a coffee</a>.
+## Join Community
+- <a href="https://discord.gg/xuNTKRDebx">Discord Community</a>
+- <a href="https://boosty.to/devsdaddy">Buy me a Beer (Boosty)</a>
 
 ![GameShield Wiki](https://github.com/DevsDaddy/GameShield/blob/wiki_visuals/footerImage.png?raw=true)
