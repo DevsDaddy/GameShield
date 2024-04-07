@@ -114,6 +114,9 @@ namespace DevsDaddy.GameShield.Core.Editor
             if(GUILayout.Button("Check New Versions", styles.GetBasicButtonSyle())) {
                 Application.OpenURL("https://github.com/DevsDaddy/GameShield/releases");
             }
+            if(GUILayout.Button("Join Discord", styles.GetBasicButtonSyle())) {
+                Application.OpenURL("https://discord.gg/xuNTKRDebx");
+            }
             if(GUILayout.Button("Report a Bug", styles.GetBasicButtonSyle())) {
                 Application.OpenURL("https://github.com/DevsDaddy/GameShield/issues");
             }
