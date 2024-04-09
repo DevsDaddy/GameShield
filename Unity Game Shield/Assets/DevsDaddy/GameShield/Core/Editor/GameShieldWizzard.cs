@@ -210,6 +210,17 @@ namespace DevsDaddy.GameShield.Core.Editor
         }
 
         /// <summary>
+        /// Toggle All Modules
+        /// </summary>
+        private static void ToggleAllModules() {
+            // Toggle All Modules
+            List<IShieldModule> allModules = ModuleManager.GetAllModules();
+            allModules.ForEach(module => {
+                currentConfig.AvailableModules.Add(module.GetType().ToString());
+            });
+        }
+
+        /// <summary>
         /// Draw Single Module
         /// </summary>
         /// <param name="module"></param>
@@ -440,6 +451,7 @@ namespace DevsDaddy.GameShield.Core.Editor
             if (config == null) {
                 currentConfig = CreateInstance<GameShieldConfig>();
                 currentConfig.DeveloperKey = Generator.GenerateRandomKey(32);
+                ToggleAllModules();
                 string pathToConfig = $"{rootPath}Resources/{GeneralConstants.CONFIG_PATH}.asset";
                 AssetDatabase.CreateAsset(currentConfig, pathToConfig);
                 AssetDatabase.Refresh();
