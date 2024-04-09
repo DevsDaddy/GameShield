@@ -11,7 +11,7 @@ namespace DevsDaddy.GameShield.Core
         public int ConfigRevision = 0;
         public List<string> AvailableModules = new List<string>();
 
-        public bool PauseOnApplicationTerminated = true;
+        public bool PauseOnApplicationTerminated = false;
         public string DeveloperKey = "";
         public string BackendURL = "";
         public DeveloperContacts Contacts = new DeveloperContacts();
