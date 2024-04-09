@@ -1,3 +1,4 @@
+using DevsDaddy.GameShield.Demo.Enums;
 using DevsDaddy.GameShield.Demo.Payloads;
 using DevsDaddy.Shared.EventFramework;
 using UnityEngine;
@@ -31,6 +32,13 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         }
 
         /// <summary>
+        /// Reset Enemy
+        /// </summary>
+        private void ResetEnemey() {
+            
+        }
+
+        /// <summary>
         /// Bind Events
         /// </summary>
         private void BindEvents() {
@@ -44,8 +52,17 @@ namespace DevsDaddy.GameShield.Demo.Controllers
             EventMessenger.Main.Unsubscribe<OnEnemyStateChanged>(OnStateChanged);
         }
 
+        /// <summary>
+        /// On Game State Changed
+        /// </summary>
+        /// <param name="payload"></param>
         private void OnStateChanged(OnEnemyStateChanged payload) {
-            
+            if (payload.State == BaseState.Start || payload.State == BaseState.Restart) {
+                
+            }
+            else {
+                
+            }
         }
     }
 }
