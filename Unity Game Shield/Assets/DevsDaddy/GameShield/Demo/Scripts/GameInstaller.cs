@@ -25,6 +25,7 @@ namespace DevsDaddy.GameShield.Demo
             EventMessenger.Main.Publish(new RequestWelcomeView {
                 
             });
+            StartGameplay(true);
         }
 
         /// <summary>
