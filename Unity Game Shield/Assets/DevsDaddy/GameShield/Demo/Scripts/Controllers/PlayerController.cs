@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DevsDaddy.GameShield.Core.Modules.Teleport;
+using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.GameShield.Demo.Enums;
 using DevsDaddy.GameShield.Demo.Payloads;
 using DevsDaddy.Shared.EventFramework;
@@ -30,6 +31,8 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         
         // Player Controls States
         private bool IsControlsLocked = false;
+        private TeleportDetector currentDetector;
+        private TeleportTargetChecker currentChecker;
 
         /// <summary>
         /// On Awake
@@ -39,9 +42,26 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         }
 
         /// <summary>
+        /// Teleport Detector Initialized
+        /// </summary>
+        private void TeleportDetectorInitialized(SecurityModuleInitialized payload) {
+            if (payload.Module.GetType() == typeof(TeleportDetector)) {
+                currentDetector = (TeleportDetector)payload.Module;
+                currentChecker = new TeleportTargetChecker {
+                    LastPosition = transform.position,
+                    MaxSpeed = moveSpeed,
+                    Target = transform
+                };
+                currentDetector.AddTarget(currentChecker);
+            }
+        }
+
+        /// <summary>
         /// On Destroy
         /// </summary>
         private void OnDestroy() {
+            if(currentChecker != null)
+                currentDetector.RemoveTarget(currentChecker);
             UnbindEvents();
         }
 
@@ -54,6 +74,9 @@ namespace DevsDaddy.GameShield.Demo.Controllers
             MoveCharacter();
         }
 
+        /// <summary>
+        /// Move Character
+        /// </summary>
         private void MoveCharacter() {
             /*  Controller Mappings */
             vaxis = Input.GetAxis("Vertical");
@@ -80,11 +103,10 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         /// </summary>
         private void ResetPlayer() {
             transform.SetPositionAndRotation(initialPosition, initialRotation);
-            Core.GameShield.Main.GetModule<TeleportDetector>().AddTarget(new TeleportTargetChecker {
-                LastPosition = transform.position,
-                MaxSpeed = runningSpeed,
-                Target = transform
-            });
+            if (currentDetector != null && currentChecker != null) {
+                currentDetector.RemoveTarget(currentChecker);
+                currentDetector.AddTarget(currentChecker);
+            }
         }
 
         /// <summary>
@@ -92,6 +114,7 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         /// </summary>
         private void BindEvents() {
             EventMessenger.Main.Subscribe<OnPlayerStateChanged>(OnStateChanged);
+            EventMessenger.Main.Subscribe<SecurityModuleInitialized>(TeleportDetectorInitialized);
         }
 
         /// <summary>
@@ -99,6 +122,7 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         /// </summary>
         private void UnbindEvents() {
             EventMessenger.Main.Unsubscribe<OnPlayerStateChanged>(OnStateChanged);
+            EventMessenger.Main.Unsubscribe<SecurityModuleInitialized>(TeleportDetectorInitialized);
         }
 
         /// <summary>

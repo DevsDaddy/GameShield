@@ -1,3 +1,5 @@
+using DevsDaddy.GameShield.Core.Constants;
+using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.GameShield.Demo.Enums;
 using DevsDaddy.GameShield.Demo.Payloads;
 using DevsDaddy.Shared.EventFramework;
@@ -21,11 +23,46 @@ namespace DevsDaddy.GameShield.Demo
         /// On Scene Installer Started
         /// </summary>
         private void Start() {
-            // Request Welcome View
+            ShowWelcomeView();
+        }
+
+        /// <summary>
+        /// Show Welcome View
+        /// </summary>
+        private void ShowWelcomeView() {
+            StopGameplay();
             EventMessenger.Main.Publish(new RequestWelcomeView {
-                
+                OnGameStarted = () => {
+                    ShowGameplayUI();
+                    StartGameplay(false);
+                }
             });
-            StartGameplay(true);
+        }
+
+        /// <summary>
+        /// Show Gameplay UI
+        /// </summary>
+        private void ShowGameplayUI() {
+            EventMessenger.Main.Publish(new RequestInGameView {
+                OnGameRestarted = ShowWelcomeView,
+                OnDetectionPaused = () => Core.GameShield.Main.ToggleAllModulesDetection(true),
+                OnDetectionStarted = () => Core.GameShield.Main.ToggleAllModulesDetection(false),
+                OnReportRequested = ShowReportWindow
+            });
+        }
+
+        /// <summary>
+        /// Show Report Window
+        /// </summary>
+        private void ShowReportWindow() {
+            EventMessenger.Main.Publish(new RequestReportingView {
+                OnReportSended = () => {
+                    Debug.Log($"{GeneralStrings.LOG_PREFIX} Report Completely Sended");
+                },
+                OnError = error => {
+                    Debug.LogError($"{GeneralStrings.LOG_PREFIX} Report Sending Error: {error}");
+                }
+            });
         }
 
         /// <summary>
@@ -39,14 +76,24 @@ namespace DevsDaddy.GameShield.Demo
         /// Bind Events
         /// </summary>
         private void BindEvents() {
-            
+            EventMessenger.Main.Subscribe<SecurityWarningPayload>(OnCheatDetected);
         }
 
         /// <summary>
         /// Unbind Events
         /// </summary>
         private void UnbindEvents() {
-            
+            EventMessenger.Main.Unsubscribe<SecurityWarningPayload>(OnCheatDetected);
+        }
+
+        /// <summary>
+        /// On Cheat Detected
+        /// </summary>
+        /// <param name="payload"></param>
+        private void OnCheatDetected(SecurityWarningPayload payload) {
+            EventMessenger.Main.Publish(new RequestDetectionView {
+                DetectionData = payload
+            });
         }
 
         /// <summary>

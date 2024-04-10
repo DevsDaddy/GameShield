@@ -68,6 +68,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83a9a99f7fa34ae19bdbaf8d0a91e743, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialPosition: {x: -3.1, y: 0.487, z: 10.92}
+  initialRotation: {x: 0, y: 0, z: 0, w: 0}
+  agent: {fileID: 707477814178293226}
+  waypoints: []
 --- !u!1 &6655836478499380855
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,7 +134,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: ff7a71a59316b22469a304c94f2b4b00, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

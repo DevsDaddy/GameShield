@@ -198,6 +198,42 @@ namespace DevsDaddy.GameShield.Core
         }
 
         /// <summary>
+        /// Pause All Modules
+        /// </summary>
+        public void PauseAllModules() {
+            ToggleAllModulesDetection(true);
+        }
+
+        /// <summary>
+        /// Unpause / Start All Modules
+        /// </summary>
+        public void StartAllModules() {
+            ToggleAllModulesDetection(false);
+        }
+
+        /// <summary>
+        /// Toggle All Modules Pause
+        /// </summary>
+        /// <param name="isModulePaused"></param>
+        public void ToggleAllModulesDetection(bool isModulePaused) {
+            loadedModules.ForEach(module => {
+                module.PauseDetector(isModulePaused);
+            });
+        }
+
+        /// <summary>
+        /// Get Paused Detectors Count
+        /// </summary>
+        /// <returns></returns>
+        public int GetPausedDetectorsCount() {
+            int pausedCount = 0;
+            loadedModules.ForEach(module => {
+                if (module.IsPaused()) pausedCount++;
+            });
+            return pausedCount;
+        }
+
+        /// <summary>
         /// On Coroutine Requested
         /// </summary>
         /// <param name="payload"></param>
