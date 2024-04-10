@@ -108,7 +108,7 @@ namespace DevsDaddy.GameShield.Core.Modules.Teleport
                         {
                             EventMessenger.Main.Publish(new SecurityWarningPayload {
                                 Code = 422,
-                                Message = TeleportWarnings.TeleportCheating,
+                                Message = string.Format(TeleportWarnings.TeleportCheating, target.Target.gameObject.name),
                                 IsCritical = true,
                                 Module = this
                             });

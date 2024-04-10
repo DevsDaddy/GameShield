@@ -39,7 +39,7 @@ namespace DevsDaddy.GameShield.Core.Modules.Injection
         
         // Private Params
         private bool m_SignaturesAreNotGenuine;
-        private AllowedAssembly[] m_AllowedAssemblies;
+        private AllowedAssembly[] m_AllowedAssemblies = null;
         private string[] m_HexTable;
         
         /// <summary>
@@ -258,8 +258,8 @@ namespace DevsDaddy.GameShield.Core.Modules.Injection
         /// </summary>
         /// <param name="ass"></param>
         /// <returns></returns>
-        private bool AssemblyAllowed(Assembly ass)
-        {
+        private bool AssemblyAllowed(Assembly ass) {
+            if (!_initialized) return false;
 #if !UNITY_WEBPLAYER
             string assemblyName = ass.GetName().Name;
 #else
@@ -270,6 +270,7 @@ namespace DevsDaddy.GameShield.Core.Modules.Injection
             int hash = GetAssemblyHash(ass);
             
             bool result = false;
+            if (m_AllowedAssemblies == null) return false;
             for (int i = 0; i < m_AllowedAssemblies.Length; i++)
             {
                 AllowedAssembly allowedAssembly = m_AllowedAssemblies[i];

@@ -24,8 +24,6 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         [SerializeField] private List<Transform> waypoints;
 
         private int currentWaypoint = 0;
-        private TeleportDetector currentDetector;
-        private TeleportTargetChecker currentChecker;
 
         /// <summary>
         /// On Awake
@@ -35,26 +33,9 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         }
 
         /// <summary>
-        /// Teleport Detector Initialized
-        /// </summary>
-        private void TeleportDetectorInitialized(SecurityModuleInitialized payload) {
-            if (payload.Module.GetType() == typeof(TeleportDetector)) {
-                currentDetector = (TeleportDetector)payload.Module;
-                currentChecker = new TeleportTargetChecker {
-                    LastPosition = transform.position,
-                    MaxSpeed = agent.speed,
-                    Target = transform
-                };
-                currentDetector.AddTarget(currentChecker);
-            }
-        }
-
-        /// <summary>
         /// On Destroy
         /// </summary>
         private void OnDestroy() {
-            if(currentChecker != null)
-                currentDetector.RemoveTarget(currentChecker);
             UnbindEvents();
         }
 
@@ -99,7 +80,6 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         /// </summary>
         private void BindEvents() {
             EventMessenger.Main.Subscribe<OnEnemyStateChanged>(OnStateChanged);
-            EventMessenger.Main.Subscribe<SecurityModuleInitialized>(TeleportDetectorInitialized);
         }
 
         /// <summary>
@@ -107,7 +87,6 @@ namespace DevsDaddy.GameShield.Demo.Controllers
         /// </summary>
         private void UnbindEvents() {
             EventMessenger.Main.Unsubscribe<OnEnemyStateChanged>(OnStateChanged);
-            EventMessenger.Main.Unsubscribe<SecurityModuleInitialized>(TeleportDetectorInitialized);
         }
 
         /// <summary>

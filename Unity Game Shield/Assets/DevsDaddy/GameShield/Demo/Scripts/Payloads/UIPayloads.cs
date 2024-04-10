@@ -23,6 +23,8 @@ namespace DevsDaddy.GameShield.Demo.Payloads
     public class RequestDetectionView : IPayload
     {
         public SecurityWarningPayload DetectionData;
+        public Action OnApply;
+        public Action OnCancel;
     }
     
     [System.Serializable]

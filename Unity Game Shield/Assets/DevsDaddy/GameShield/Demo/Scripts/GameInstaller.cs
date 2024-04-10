@@ -92,7 +92,9 @@ namespace DevsDaddy.GameShield.Demo
         /// <param name="payload"></param>
         private void OnCheatDetected(SecurityWarningPayload payload) {
             EventMessenger.Main.Publish(new RequestDetectionView {
-                DetectionData = payload
+                DetectionData = payload,
+                OnApply = () => {},
+                OnCancel = ShowReportWindow
             });
         }
 
