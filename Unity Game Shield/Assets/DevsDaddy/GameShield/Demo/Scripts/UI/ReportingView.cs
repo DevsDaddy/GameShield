@@ -1,3 +1,6 @@
+using System;
+using DevsDaddy.GameShield.Core.Constants;
+using DevsDaddy.GameShield.Core.Reporter;
 using DevsDaddy.GameShield.Demo.Payloads;
 using DevsDaddy.Shared.EventFramework;
 using UnityEngine;
@@ -49,7 +52,9 @@ namespace DevsDaddy.GameShield.Demo.UI
         /// <param name="payload"></param>
         private void OnViewRequested(RequestReportingView payload) {
             applyButton.onClick.RemoveAllListeners();
-            applyButton.onClick.AddListener(SendReport);
+            applyButton.onClick.AddListener(() => {
+                SendReport(payload);
+            });
             cancelButton.onClick.RemoveAllListeners();
             cancelButton.onClick.AddListener(Hide);
             
@@ -65,8 +70,24 @@ namespace DevsDaddy.GameShield.Demo.UI
         /// <summary>
         /// Send Report Using GameShield API
         /// </summary>
-        private void SendReport() {
-            
+        private void SendReport(RequestReportingView payload) {
+            EventMessenger.Main.Publish(new ReportingPayload {
+                Data = new ReportData {
+                    Gateway = "/demo/",
+                    Code = 999.ToString(),
+                    IsUserReport = true,
+                    LocalTime = DateTime.Now,
+                    Message = messageField.text,
+                    ModuleType = "UserReporting"
+                },
+                OnComplete = response => {
+                    Debug.Log($"{GeneralStrings.LOG_PREFIX} Reporter Server Response: {response}");
+                    payload.OnReportSended?.Invoke();
+                },
+                OnError = error => {
+                    payload.OnError?.Invoke(error);
+                }
+            });
         }
     }
 }

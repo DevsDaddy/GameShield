@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DevsDaddy.GameShield.Core.Constants;
 using DevsDaddy.GameShield.Core.Modules;
 using DevsDaddy.GameShield.Core.Payloads;
+using DevsDaddy.GameShield.Core.Reporter;
 using DevsDaddy.GameShield.Core.Utils;
 using DevsDaddy.Shared.EventFramework;
 using UnityEngine;
@@ -57,6 +58,7 @@ namespace DevsDaddy.GameShield.Core
             // Application Started Event
             EventMessenger.Main.Subscribe<RequestCoroutine>(OnRequestCoroutine);
             EventMessenger.Main.Subscribe<StopCoroutine>(OnStopCoroutine);
+            EventMessenger.Main.Subscribe<ReportingPayload>(ProcessReportingWorker);
             EventMessenger.Main.Publish(new ApplicationStartedPayload {
                 Time = DateTime.Now
             });
@@ -101,6 +103,7 @@ namespace DevsDaddy.GameShield.Core
         private void OnDestroy() {
             EventMessenger.Main.Unsubscribe<RequestCoroutine>(OnRequestCoroutine);
             EventMessenger.Main.Unsubscribe<StopCoroutine>(OnStopCoroutine);
+            EventMessenger.Main.Unsubscribe<ReportingPayload>(ProcessReportingWorker);
             EventMessenger.Main.Publish(new ApplicationClosePayload {
                 IsQuitting = isQuitting,
                 Time = DateTime.Now
@@ -198,6 +201,14 @@ namespace DevsDaddy.GameShield.Core
         }
 
         /// <summary>
+        /// Get Backend Url
+        /// </summary>
+        /// <returns></returns>
+        public string GetBackendUrl() {
+            return currentConfig.BackendURL;
+        }
+
+        /// <summary>
         /// Pause All Modules
         /// </summary>
         public void PauseAllModules() {
@@ -266,6 +277,20 @@ namespace DevsDaddy.GameShield.Core
         private void RemoveAllCoroutines() {
             currentCoroutines.Clear();
             StopAllCoroutines();
+        }
+
+        /// <summary>
+        /// Process Reporting Payload
+        /// </summary>
+        /// <param name="payload"></param>
+        private void ProcessReportingWorker(ReportingPayload payload) {
+            if (payload.Data == null) {
+                Debug.LogError($"{GeneralStrings.LOG_PREFIX} Failed to Process Reporting. Reporting Data is Empty");
+                return;
+            }
+            
+            // Send Report
+            ReporterWorker.Send(payload.Data, payload.OnComplete, payload.OnError);
         }
 
         /// <summary>
