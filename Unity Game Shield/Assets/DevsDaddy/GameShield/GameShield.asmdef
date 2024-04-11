@@ -1,0 +1,17 @@
+{
+    "name": "GameShield",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9e94c900901bded428fa7bec1dab4d89",
+        "GUID:2576790177f6d514d97155b443dfc070"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
