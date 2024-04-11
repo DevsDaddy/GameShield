@@ -12,6 +12,7 @@ namespace DevsDaddy.GameShield.Demo.UI
     {
         [Header("UI References")] 
         [SerializeField] private Button startButton;
+        [SerializeField] private Button showCaptchaButton;
         
         /// <summary>
         /// On View Initialized
@@ -52,6 +53,11 @@ namespace DevsDaddy.GameShield.Demo.UI
             startButton.onClick.AddListener(() => {
                 Hide();
                 payload.OnGameStarted?.Invoke();
+            });
+            
+            showCaptchaButton.onClick.RemoveAllListeners();
+            showCaptchaButton.onClick.AddListener(() => {
+                payload.OnCaptchaRequested?.Invoke();
             });
         }
     }

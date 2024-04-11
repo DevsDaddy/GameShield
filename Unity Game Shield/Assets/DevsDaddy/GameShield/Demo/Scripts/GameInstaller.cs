@@ -1,4 +1,5 @@
 using DevsDaddy.GameShield.Core.Constants;
+using DevsDaddy.GameShield.Core.Modules.Captcha;
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.GameShield.Demo.Enums;
 using DevsDaddy.GameShield.Demo.Payloads;
@@ -35,6 +36,40 @@ namespace DevsDaddy.GameShield.Demo
                 OnGameStarted = () => {
                     ShowGameplayUI();
                     StartGameplay(false);
+                },
+                OnCaptchaRequested = ShowCaptchaUI
+            });
+        }
+
+        /// <summary>
+        /// Show Captcha UI
+        /// </summary>
+        private void ShowCaptchaUI() {
+            EventMessenger.Main.Publish(new RequestCaptchaPayload {
+                NumOfImages = 5,
+                OnError = (error) => {
+                    EventMessenger.Main.Publish(new RequestDialogue {
+                        Title = "Something Wrong",
+                        Message = $"There seems to have been an error while solving the captcha: \n {error}",
+                        MessageColor = Color.red,
+                        OnComplete = () => { }
+                    });
+                },
+                OnCanceled = () => {
+                    EventMessenger.Main.Publish(new RequestDialogue {
+                        Title = "Captcha is Canceled",
+                        Message = "To get reward you need to solve captcha. Come back later and try again.",
+                        MessageColor = new Color(0.2f, 0.2f, 0.2f, 1f),
+                        OnComplete = () => { }
+                    });
+                },
+                OnComplete = () => {
+                    EventMessenger.Main.Publish(new RequestDialogue {
+                        Title = "Captcha is Solved",
+                        Message = "Thank you for your time. Your reward will be issued shortly.",
+                        MessageColor = new Color(0.2f, 0.2f, 0.2f, 1f),
+                        OnComplete = () => { }
+                    });
                 }
             });
         }
@@ -57,9 +92,20 @@ namespace DevsDaddy.GameShield.Demo
         private void ShowReportWindow() {
             EventMessenger.Main.Publish(new RequestReportingView {
                 OnReportSended = () => {
-                    Debug.Log($"{GeneralStrings.LOG_PREFIX} Report Completely Sended");
+                    EventMessenger.Main.Publish(new RequestDialogue {
+                        Title = "Report Sent",
+                        Message = "Your report has been successfully sent. We will resolve your issue as soon as possible.\nThank you for contacting us!",
+                        MessageColor = new Color(0.2f, 0.2f, 0.2f, 1f),
+                        OnComplete = () => { }
+                    });
                 },
                 OnError = error => {
+                    EventMessenger.Main.Publish(new RequestDialogue {
+                        Title = "An Error Occured",
+                        Message = "Unfortunately, an error occurred while sending the report. We are already aware of it and are trying to resolve it. Thank you for your understanding.",
+                        MessageColor = Color.red,
+                        OnComplete = () => { }
+                    });
                     Debug.LogError($"{GeneralStrings.LOG_PREFIX} Report Sending Error: {error}");
                 }
             });
@@ -93,7 +139,7 @@ namespace DevsDaddy.GameShield.Demo
         private void OnCheatDetected(SecurityWarningPayload payload) {
             EventMessenger.Main.Publish(new RequestDetectionView {
                 DetectionData = payload,
-                OnApply = () => {},
+                OnApply = () => { },
                 OnCancel = ShowReportWindow
             });
         }

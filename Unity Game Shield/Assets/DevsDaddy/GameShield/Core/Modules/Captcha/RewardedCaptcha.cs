@@ -1,6 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using DevsDaddy.GameShield.Core.Constants;
 using DevsDaddy.GameShield.Core.Payloads;
+using DevsDaddy.GameShield.Core.Utils;
 using DevsDaddy.Shared.EventFramework;
 using UnityEngine;
+using Random = System.Random;
 
 namespace DevsDaddy.GameShield.Core.Modules.Captcha
 {
@@ -12,6 +18,8 @@ namespace DevsDaddy.GameShield.Core.Modules.Captcha
         private Options _currentOptions;
         private bool _initialized = false;
         private bool _isPaused = false;
+
+        private RewardedCaptchaData currentData;
 
         /// <summary>
         /// Setup Module
@@ -37,7 +45,6 @@ namespace DevsDaddy.GameShield.Core.Modules.Captcha
         /// Disconnect Module
         /// </summary>
         public void Disconnect() {
-            
             // Fire Disconnected Complete
             EventMessenger.Main.Publish(new SecurityModuleDisconnected {
                 Module = this
@@ -69,11 +76,74 @@ namespace DevsDaddy.GameShield.Core.Modules.Captcha
         /// Initialize Module
         /// </summary>
         private void Initialize() {
-
             // Fire Initialization Complete
             EventMessenger.Main.Publish(new SecurityModuleInitialized {
                 Module = this
             });
+        }
+
+        /// <summary>
+        /// Generate Captcha Data
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="availableSpritesCount"></param>
+        /// <returns></returns>
+        public RewardedCaptchaData GenerateCaptchaData(RequestCaptchaPayload payload, int availableSpritesCount) {
+            // Check Sizes
+            if (payload.NumOfImages > availableSpritesCount) {
+                Debug.LogWarning($"{GeneralStrings.LOG_PREFIX} Number of Required images is larger than available sprites count in captcha.");
+                payload.NumOfImages = availableSpritesCount;
+            }
+            
+            // Current Data
+            currentData = new RewardedCaptchaData {
+                RequiredOrder = new int[payload.NumOfImages],
+                CurrentFieldOrder = new int[payload.NumOfImages]
+            };
+            
+            // Generate Required List
+            currentData.RequiredOrder =
+                Generator.GenerateUniqueRandomRange(0, availableSpritesCount - 1, payload.NumOfImages);
+            
+            // Shuffle Order for Clicks
+            var rnd = new Random();
+            currentData.CurrentFieldOrder = currentData.RequiredOrder.Select(x => (x, rnd.Next()))
+                .OrderBy(tuple => tuple.Item2)
+                .Select(tuple => tuple.Item1)
+                .ToArray();
+            return currentData;
+        }
+
+        /// <summary>
+        /// Get Captcha Data
+        /// </summary>
+        /// <returns></returns>
+        public RewardedCaptchaData GetData() {
+            return currentData;
+        }
+
+        /// <summary>
+        /// Check if is right clicking order
+        /// </summary>
+        /// <param name="providedOrder"></param>
+        /// <returns></returns>
+        public bool IsRightOrder(List<int> providedOrder) {
+            // Check Length
+            if (providedOrder.Count != currentData.RequiredOrder.Length) {
+                Debug.LogError($"{GeneralStrings.LOG_PREFIX} Failed to check captcha order. Provided order length must be equal of current required order length");
+                return false;
+            }
+            
+            // Check Values
+            bool isRight = true;
+            for (int i = 0; i < providedOrder.Count; i++) {
+                if (providedOrder[i] != currentData.RequiredOrder[i]) {
+                    isRight = false;
+                    break;
+                }
+            }
+
+            return isRight;
         }
 
         /// <summary>
@@ -90,9 +160,6 @@ namespace DevsDaddy.GameShield.Core.Modules.Captcha
         
         // Module Options Configuration
         [System.Serializable]
-        public class Options : IShieldModuleConfig
-        {
-            
-        }
+        public class Options : IShieldModuleConfig { }
     }
 }

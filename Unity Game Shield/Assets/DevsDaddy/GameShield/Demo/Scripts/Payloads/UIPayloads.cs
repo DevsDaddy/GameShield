@@ -1,6 +1,7 @@
 using System;
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework.Core.Payloads;
+using UnityEngine;
 
 namespace DevsDaddy.GameShield.Demo.Payloads
 {
@@ -8,6 +9,7 @@ namespace DevsDaddy.GameShield.Demo.Payloads
     public class RequestWelcomeView : IPayload
     {
         public Action OnGameStarted;
+        public Action OnCaptchaRequested;
     }
     
     [System.Serializable]
@@ -32,5 +34,14 @@ namespace DevsDaddy.GameShield.Demo.Payloads
     {
         public Action OnReportSended;
         public Action<string> OnError;
+    }
+
+    [System.Serializable]
+    public class RequestDialogue : IPayload
+    {
+        public string Title;
+        public string Message;
+        public Color MessageColor = new Color(0.2f, 0.2f, 0.2f, 1f);
+        public Action OnComplete;
     }
 }

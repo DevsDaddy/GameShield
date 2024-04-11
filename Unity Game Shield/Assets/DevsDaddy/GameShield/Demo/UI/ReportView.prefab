@@ -649,7 +649,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Send Report
+  m_Text: Cancel
 --- !u!1 &3684470180807727195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1275,7 +1275,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Continue
+  m_Text: Send Report
 --- !u!1 &8295161610607786542
 GameObject:
   m_ObjectHideFlags: 0
@@ -1405,5 +1405,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfa6a0cff4c74b069d8a9e01af616493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  applyButton: {fileID: 0}
-  cancelButton: {fileID: 0}
+  applyButton: {fileID: 1748836858519931503}
+  cancelButton: {fileID: 3534702692526237220}
+  messageField: {fileID: 2450176975737459318}
