@@ -61,6 +61,13 @@ I am always ready to help you develop a strategy to protect your applications - 
 
 ## Join Community
 - <a href="https://discord.gg/xuNTKRDebx">Discord Community</a>
-- <a href="https://boosty.to/devsdaddy">Buy me a Beer (Boosty)</a>
+
+## Support Me
+**You can support the development and updating of libraries and assemblies by dropping a coin:**
+<table>
+  <tr><td>Bitcoin (BTC)</td><td>bc1qef2d34r4xkrm48zknjdjt7c0ea92ay9m2a7q55</td></tr>
+  <tr><td>Etherium (ETH)</td><td>0x1112a2Ef850711DF4dE9c432376F255f416ef5d0</td></tr>
+  <tr><td>Boosty</td><td>https://boosty.to/devsdaddy</td></tr>
+</table>
 
 ![GameShield Wiki](https://github.com/DevsDaddy/GameShield/blob/wiki_visuals/footerImage.png?raw=true)
