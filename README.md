@@ -29,15 +29,10 @@ For an in-depth look at the functionality - I also suggest <a href="https://gith
 * Write initialization code at your game installer script (<a href="https://github.com/DevsDaddy/GameShield/wiki/GameShield-Core#manual-registering-gameshield">see how to here</a>);
 * Done!
 
-**Unity Package Manager Installation:**
-```
-https://github.com/DevsDaddy/GameShield.git?path=/Unity%20Game%20Shield/Assets/DevsDaddy/GameShield/
-```
-
 **Dependencies:**
 - Unity 2021+ Required;
-- <a href="https://github.com/DevsDaddy/UnityEventFramework">Unity Event Framework</a> (Included);
-- <a href="https://github.com/DevsDaddy/UnityCrypto">Unity Crypto Library</a> (Included);
+- <a href="https://github.com/DevsDaddy/UnityEventFramework">Unity Event Framework</a>;
+- <a href="https://github.com/DevsDaddy/UnityCrypto">Unity Crypto Library</a>;
 
 ## Features
 <table>
@@ -67,6 +62,13 @@ I am always ready to help you develop a strategy to protect your applications - 
 
 ## Join Community
 - <a href="https://discord.gg/xuNTKRDebx">Discord Community</a>
-- <a href="https://boosty.to/devsdaddy">Buy me a Beer (Boosty)</a>
+
+## Support Me
+**You can support the development and updating of libraries and assemblies by dropping a coin:**
+<table>
+  <tr><td>Bitcoin (BTC)</td><td>bc1qef2d34r4xkrm48zknjdjt7c0ea92ay9m2a7q55</td></tr>
+  <tr><td>Etherium (ETH)</td><td>0x1112a2Ef850711DF4dE9c432376F255f416ef5d0</td></tr>
+  <tr><td>Boosty</td><td>https://boosty.to/devsdaddy</td></tr>
+</table>
 
 ![GameShield Wiki](https://github.com/DevsDaddy/GameShield/blob/wiki_visuals/footerImage.png?raw=true)
