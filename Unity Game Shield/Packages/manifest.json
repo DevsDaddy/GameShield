@@ -1,7 +1,8 @@
 {
   "dependencies": {
+    "com.devsdaddy.cryptolibrary": "https://github.com/DevsDaddy/UnityCrypto.git?path=/DevsDaddy/Shared/CryptoLibrary/",
+    "com.devsdaddy.eventframework": "https://github.com/DevsDaddy/UnityEventFramework.git?path=/DevsDaddy/Shared/EventFramework/",
     "com.unity.2d.sprite": "1.0.0",
-    "com.unity.ai.navigation": "1.1.5",
     "com.unity.collab-proxy": "2.3.1",
     "com.unity.feature.development": "1.0.1",
     "com.unity.textmeshpro": "3.0.6",
