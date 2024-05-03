@@ -16,20 +16,26 @@ For an in-depth look at the functionality - I also suggest <a href="https://gith
 **GameShield** installs into your project as easily as possible - basic installation and configuration takes **only 4 steps**. Below we will consider both **automatic initialization** and **manual configuration**.
 
 **Basic Installation:**
-* Download <a href="https://github.com/DevsDaddy/GameShield/releases">Latest Release from GitHUB</a>;
+* Download <a href="https://github.com/DevsDaddy/GameShield/releases">Latest Release from GitHUB</a> or using UPM;
 * Import **.unitypackage** into your project;
 * Run **Setup Wizzard** at Unity Top Menu (**GameShield** -> **Setup Wizzard**);
 * Check all settings and press **"Complete"**;
 * Done!
 
 **Manual Installation:**
-* Download <a href="https://github.com/DevsDaddy/GameShield/releases">Latest Release from GitHUB</a>;
+* Download <a href="https://github.com/DevsDaddy/GameShield/releases">Latest Release from GitHUB</a> or using UPM;
 * Import **.unitypackage** into your project;
 * Place Prefab with **GameShield** main script at scene;
 * Write initialization code at your game installer script (<a href="https://github.com/DevsDaddy/GameShield/wiki/GameShield-Core#manual-registering-gameshield">see how to here</a>);
 * Done!
 
+**Unity Package Manager Installation:**
+```
+https://github.com/DevsDaddy/GameShield.git?path=/Unity%20Game%20Shield/Assets/DevsDaddy/GameShield/
+```
+
 **Dependencies:**
+- Unity 2021+ Required;
 - <a href="https://github.com/DevsDaddy/UnityEventFramework">Unity Event Framework</a> (Included);
 - <a href="https://github.com/DevsDaddy/UnityCrypto">Unity Crypto Library</a> (Included);
 
