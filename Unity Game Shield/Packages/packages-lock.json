@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.devsdaddy.eventframework": {
+      "version": "https://github.com/DevsDaddy/UnityEventFramework.git?path=/DevsDaddy/Shared/EventFramework/",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f373066ec11ee4f51a42d99c0e0999fc6b563109"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
