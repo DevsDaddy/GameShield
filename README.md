@@ -31,13 +31,15 @@ For an in-depth look at the functionality - I also suggest <a href="https://gith
 
 **Unity Package Manager Installation:**
 ```
+https://github.com/DevsDaddy/UnityCrypto.git?path=/DevsDaddy/Shared/CryptoLibrary/
+https://github.com/DevsDaddy/UnityEventFramework.git?path=/DevsDaddy/Shared/EventFramework/
 https://github.com/DevsDaddy/GameShield.git?path=/Unity%20Game%20Shield/Assets/DevsDaddy/GameShield/
 ```
 
 **Dependencies:**
 - Unity 2021+ Required;
-- <a href="https://github.com/DevsDaddy/UnityEventFramework">Unity Event Framework</a> (Included);
-- <a href="https://github.com/DevsDaddy/UnityCrypto">Unity Crypto Library</a> (Included);
+- <a href="https://github.com/DevsDaddy/UnityEventFramework">Unity Event Framework</a>;
+- <a href="https://github.com/DevsDaddy/UnityCrypto">Unity Crypto Library</a>;
 
 ## Features
 <table>
