@@ -30,5 +30,6 @@
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.2d.sprite": "1.0.0"
   },
+  "resolutionStrategy": "higherMinor",
   "category": "Unity"
 }
