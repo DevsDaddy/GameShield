@@ -15,7 +15,6 @@ using System.IO;
 using System.Reflection;
 using DevsDaddy.GameShield.Core.Constants;
 using DevsDaddy.GameShield.Core.Modules.Memory.SecuredTypes;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 #if UNITY_EDITOR
