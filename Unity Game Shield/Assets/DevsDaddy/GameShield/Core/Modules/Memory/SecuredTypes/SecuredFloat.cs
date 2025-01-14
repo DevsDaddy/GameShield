@@ -149,16 +149,21 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory.SecuredTypes
 
 			float decrypted = union.f;
 
-			MemoryProtector protector = GameShield.Main.GetModule<MemoryProtector>();
-			if (protector != null && fakeValue != 0 && Math.Abs(decrypted - fakeValue) > protector.Config.FloatEpsilon)
-			{
-				EventMessenger.Main.Publish(new SecurityWarningPayload {
-					Code = 101,
-					Message = MemoryWarnings.TypeHackWarning,
-					IsCritical = true,
-					Module = protector
-				});
-			}
+            var gameShield = GameShield.Main;
+            if (gameShield != null)
+            {
+                var protector = gameShield.GetModule<MemoryProtector>();
+                if (protector != null && fakeValue != 0 && Math.Abs(decrypted - fakeValue) > protector.Config.FloatEpsilon)
+                {
+                    EventMessenger.Main.Publish(new SecurityWarningPayload
+                    {
+                        Code = 101,
+                        Message = MemoryWarnings.TypeHackWarning,
+                        IsCritical = true,
+                        Module = protector
+                    });
+                }
+            }
 
 			return decrypted;
 		}
@@ -188,9 +193,13 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory.SecuredTypes
 		public static implicit operator SecuredFloat(float value)
 		{
 			SecuredFloat obscured = new SecuredFloat(InternalEncrypt(value));
-			if (GameShield.Main.GetModule<MemoryProtector>() != null)
+            var gameShield = GameShield.Main;
+			if (gameShield != null)
 			{
-				obscured.fakeValue = value;
+				if (GameShield.Main.GetModule<MemoryProtector>() != null)
+				{
+					obscured.fakeValue = value;
+				}
 			}
 			return obscured;
 		}
