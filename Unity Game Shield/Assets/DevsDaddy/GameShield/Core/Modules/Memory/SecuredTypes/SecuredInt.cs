@@ -94,47 +94,58 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory.SecuredTypes
 				fakeValue = InternalDecrypt();
 			}
 		}
-		
-		private int InternalDecrypt()
-		{
-			if (!inited)
+
+        private int InternalDecrypt()
+        {
+            if (!inited)
+            {
+                currentCryptoKey = cryptoKey;
+                hiddenValue = Encrypt(0);
+                fakeValue = 0;
+                inited = true;
+            }
+
+            int key = cryptoKey;
+
+            if (currentCryptoKey != cryptoKey)
+            {
+                key = currentCryptoKey;
+            }
+
+            int decrypted = Decrypt(hiddenValue, key);
+
+            var gameShield = GameShield.Main;
+            if (gameShield != null)
+            {
+                var protector = gameShield.GetModule<MemoryProtector>();
+                if (protector != null && fakeValue != 0 && decrypted != fakeValue)
+                {
+                    EventMessenger.Main.Publish(new SecurityWarningPayload
+                    {
+                        Code = 101,
+                        Message = MemoryWarnings.TypeHackWarning,
+                        IsCritical = true,
+                        Module = protector
+                    });
+                }
+            }
+
+            return decrypted;
+        }
+
+
+
+        public static implicit operator SecuredInt(int value)
+        {
+            SecuredInt obscured = new SecuredInt(Encrypt(value));
+            var gameShield = GameShield.Main;
+            if (gameShield != null)
 			{
-				currentCryptoKey = cryptoKey;
-				hiddenValue = Encrypt(0);
-				fakeValue = 0;
-				inited = true;
-			}
-
-			int key = cryptoKey;
-
-			if (currentCryptoKey != cryptoKey)
-			{
-				key = currentCryptoKey;
-			}
-
-			int decrypted = Decrypt(hiddenValue, key);
-
-			MemoryProtector protector = GameShield.Main.GetModule<MemoryProtector>();
-			if (protector != null && fakeValue != 0 && decrypted != fakeValue)
-			{
-				EventMessenger.Main.Publish(new SecurityWarningPayload {
-					Code = 101,
-					Message = MemoryWarnings.TypeHackWarning,
-					IsCritical = true,
-					Module = protector
-				});
-			}
-
-			return decrypted;
-		}
-		
-		public static implicit operator SecuredInt(int value)
-		{
-			SecuredInt obscured = new SecuredInt(Encrypt(value));
-			if (GameShield.Main.GetModule<MemoryProtector>() != null)
-			{
-				obscured.fakeValue = value;
-			}
+                if (GameShield.Main.GetModule<MemoryProtector>() != null)
+                {
+                    obscured.fakeValue = value;
+                }
+            }
 			return obscured;
 		}
 		public static implicit operator int(SecuredInt value)

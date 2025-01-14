@@ -124,16 +124,21 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory.SecuredTypes
 
 			string result = EncryptDecrypt(GetString(hiddenValue), key);
 
-			MemoryProtector protector = GameShield.Main.GetModule<MemoryProtector>();
-			if (protector!=null && !string.IsNullOrEmpty(fakeValue) && result != fakeValue)
-			{
-				EventMessenger.Main.Publish(new SecurityWarningPayload {
-					Code = 101,
-					Message = MemoryWarnings.TypeHackWarning,
-					IsCritical = true,
-					Module = protector
-				});
-			}
+            var gameShield = GameShield.Main;
+            if (gameShield != null)
+            {
+                var protector = gameShield.GetModule<MemoryProtector>();
+                if (protector != null && !string.IsNullOrEmpty(fakeValue) && result != fakeValue)
+                {
+                    EventMessenger.Main.Publish(new SecurityWarningPayload
+                    {
+                        Code = 101,
+                        Message = MemoryWarnings.TypeHackWarning,
+                        IsCritical = true,
+                        Module = protector
+                    });
+                }
+            }
 
 			return result;
 		}
@@ -146,10 +151,15 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory.SecuredTypes
 			}
 
 			SecuredString obscured = new SecuredString(InternalEncrypt(value));
-			if (GameShield.Main.GetModule<MemoryProtector>() != null)
+
+            var gameShield = GameShield.Main;
+            if (gameShield != null)
 			{
-				obscured.fakeValue = value;
-			}
+                if (GameShield.Main.GetModule<MemoryProtector>() != null)
+                {
+                    obscured.fakeValue = value;
+                }
+            }
 			return obscured;
 		}
 		public static implicit operator string(SecuredString value)

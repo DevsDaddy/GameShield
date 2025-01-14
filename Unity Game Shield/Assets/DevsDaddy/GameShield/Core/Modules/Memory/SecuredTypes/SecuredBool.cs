@@ -123,14 +123,20 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory.SecuredTypes
 
             bool decrypted = value != 181;
 
-            MemoryProtector protector = GameShield.Main.GetModule<MemoryProtector>();
-            if (protector != null && fakeValueChanged && decrypted != fakeValue) {
-                EventMessenger.Main.Publish(new SecurityWarningPayload {
-                    Code = 101,
-                    Message = MemoryWarnings.TypeHackWarning,
-                    IsCritical = true,
-                    Module = protector
-                });
+            var gameShield = GameShield.Main;
+            if (gameShield != null)
+            {
+                var protector = GameShield.Main.GetModule<MemoryProtector>();
+                if (protector != null && fakeValueChanged && decrypted != fakeValue)
+                {
+                    EventMessenger.Main.Publish(new SecurityWarningPayload
+                    {
+                        Code = 101,
+                        Message = MemoryWarnings.TypeHackWarning,
+                        IsCritical = true,
+                        Module = protector
+                    });
+                }
             }
 
             return decrypted;
@@ -139,11 +145,14 @@ namespace DevsDaddy.GameShield.Core.Modules.Memory.SecuredTypes
         public static implicit operator SecuredBool(bool value)
         {
             SecuredBool obscured = new SecuredBool(Encrypt(value));
-            
-            if (GameShield.Main.GetModule<MemoryProtector>() != null)
+            var gameShield = GameShield.Main;
+            if (gameShield != null)
             {
-                obscured.fakeValue = value;
-                obscured.fakeValueChanged = true;
+                if (GameShield.Main.GetModule<MemoryProtector>() != null)
+                {
+                    obscured.fakeValue = value;
+                    obscured.fakeValueChanged = true;
+                }
             }
 
             return obscured;
