@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Globalization;
+using System.Threading.Tasks;
 using DevsDaddy.GameShield.Core.Payloads;
 using DevsDaddy.Shared.EventFramework;
 using UnityEngine;
@@ -16,15 +18,14 @@ namespace DevsDaddy.GameShield.Core.Modules.Time
         private bool _initialized = false;
         private bool _isPaused = false;
         
-        private float timeCheckInterval = 10f;
+        private float timeCheckInterval;
         private long availableTolerance = 60;
         private bool networkCompare = true;
         
-        private float timeToCheck = 10f;
+        private float timeToCheck;
         private long lastTime = 0;
         private long lastLocalTime = 0;
-        
-        
+
 
         /// <summary>
         /// Setup Module
@@ -156,6 +157,8 @@ namespace DevsDaddy.GameShield.Core.Modules.Time
                     CompareTwoTimestamps(currentNetworkTime, currentLocalTime);
                 }
             }
+
+            timeToCheck = _currentOptions.CheckingInterval;
         }
         
         /// <summary>
@@ -168,14 +171,19 @@ namespace DevsDaddy.GameShield.Core.Modules.Time
             long networkTimeDiff = 0;
             long localTimeDiff = 0;
             long avgTimeDiff = 0;
-            
+
             networkTimeDiff = currentNetworkTime - lastTime;
             localTimeDiff = currentLocalTime - lastLocalTime;
             avgTimeDiff = (localTimeDiff > networkTimeDiff)
                 ? localTimeDiff - networkTimeDiff
                 : networkTimeDiff - localTimeDiff;
+
+            Debug.Log($"NetworkTimeDiff: {networkTimeDiff}, LocalTimeDiff: {localTimeDiff}, AvgTimeDiff: {avgTimeDiff}");
+
             if (avgTimeDiff > availableTolerance)
             {
+                Debug.LogError("Time cheating detected.");
+
                 EventMessenger.Main.Publish(new SecurityWarningPayload {
                     Code = 245,
                     IsCritical = true,
@@ -189,44 +197,76 @@ namespace DevsDaddy.GameShield.Core.Modules.Time
             lastTime = currentNetworkTime;
             lastLocalTime = currentLocalTime;
         }
-        
+
         /// <summary>
         /// Get Current Network Time
         /// </summary>
         /// <param name="onTimeRecieved"></param>
         /// <param name="onRequestError"></param>
-        private void GetCurrentNetworkTime(Action<long> onTimeRecieved, Action onRequestError) {
-            EventMessenger.Main.Publish(new RequestCoroutine {
-                Coroutine = RequestNetworkTime(onTimeRecieved, onRequestError),
-                Id = "NetworkTimeCompare"
+        private void GetCurrentNetworkTime(Action<long> onTimeRecieved, Action onRequestError)
+        {
+            EventMessenger.Main.Publish(new RequestTask
+            {
+                Id = "NetworkTimeCompare",
+                TaskToRun = async token => await RequestNetworkTime(onTimeRecieved, onRequestError)
             });
+            Debug.Log("How many times called?");
+
         }
-        
+
+
+
         /// <summary>
         /// Request Network Time
         /// </summary>
         /// <param name="onTimeRecieved"></param>
         /// <param name="onRequestError"></param>
-        /// <returns></returns>
-        private IEnumerator RequestNetworkTime(Action<long> onTimeRecieved, Action onRequestError)
+        /// <returns>A Task representing the asynchronous operation.</returns>
+        private async Task RequestNetworkTime(Action<long> onTimeReceived, Action onRequestError)
         {
-            UnityWebRequest webRequest = new UnityWebRequest(_currentOptions.NetworkServer, "GET");
-            DownloadHandlerBuffer dH = new DownloadHandlerBuffer();
-            webRequest.downloadHandler = dH;
-            yield return webRequest.SendWebRequest();
-            if (webRequest.result == UnityWebRequest.Result.Success)
+            using UnityWebRequest webRequest = UnityWebRequest.Get(_currentOptions.NetworkServer);
+
+            try
             {
-                NetworkTimeModel response = JsonUtility.FromJson<NetworkTimeModel>(webRequest.downloadHandler.text);
-                onTimeRecieved?.Invoke(response.unixtime);
+                await webRequest.SendWebRequest();
+
+                if (webRequest.result == UnityWebRequest.Result.Success)
+                {
+                    // Get the "Date" header from the response
+                    string dateHeader = webRequest.GetResponseHeader("Date");
+
+                    if (DateTime.TryParseExact(
+                        dateHeader,
+                        "ddd, dd MMM yyyy HH:mm:ss 'GMT'",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal,
+                        out DateTime parsedTime))
+                    {
+                        // Convert the DateTime to Unix time (seconds since epoch)
+                        long unixTime = new DateTimeOffset(parsedTime).ToUnixTimeSeconds();
+                        onTimeReceived?.Invoke(unixTime);
+                        Debug.Log($"Parsed Time: {parsedTime}, Unix Time: {unixTime}");
+                    }
+                    else
+                    {
+                        Debug.LogError("Invalid or missing Date header.");
+                        onRequestError?.Invoke();
+                    }
+                }
+                else
+                {
+                    // If the request fails, invoke the error callback
+                    onRequestError?.Invoke();
+                    Debug.LogError($"Request failed: {webRequest.error}");
+                }
             }
-            else
+            catch (Exception ex)
             {
                 onRequestError?.Invoke();
+                Debug.LogError($"Request failed with exception: {ex.Message}");
             }
-            
-            webRequest.Dispose();
         }
-        
+
         /// <summary>
         /// Get Current Local Time
         /// </summary>
@@ -236,18 +276,6 @@ namespace DevsDaddy.GameShield.Core.Modules.Time
             DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             long currentEpochTime = (long)(DateTime.UtcNow - epochStart).TotalSeconds;
             return currentEpochTime;
-        }
-        
-        /// <summary>
-        /// Seconds Elapsed
-        /// </summary>
-        /// <param name="t1"></param>
-        /// <param name="t2"></param>
-        /// <returns></returns>
-        private int SecondsElapsed(int t1, int t2)
-        {
-            int difference = t1 - t2;
-            return Mathf.Abs(difference);
         }
 
         /// <summary>
@@ -266,28 +294,10 @@ namespace DevsDaddy.GameShield.Core.Modules.Time
         [System.Serializable]
         public class Options : IShieldModuleConfig
         {
-            public float CheckingInterval = 10f;
+            public float CheckingInterval = 15f;
             public int AvailableTolerance = 60;
             public bool NetworkCompare = true;
-            public string NetworkServer = "https://worldtimeapi.org/api/timezone/utc";
-        }
-        
-        [System.Serializable]
-        public class NetworkTimeModel
-        {
-            public string abbreviation = "";
-            public string client_ip = "";
-            public string datetime = "";
-            public uint day_of_week = 0;
-            public uint day_of_year = 0;
-            public bool dst = false;
-            public int dst_offset = 0;
-            public int raw_offset = 0;
-            public string timezone = "";
-            public long unixtime = 0;
-            public string utc_datetime = "";
-            public string utc_offset = "+00:00";
-            public uint week_number = 0;
+            public string NetworkServer = "http://www.microsoft.com";
         }
     }
 }
