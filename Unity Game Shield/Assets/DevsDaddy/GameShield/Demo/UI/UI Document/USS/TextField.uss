@@ -1,0 +1,58 @@
+.unity-text-field {
+    background-color: rgba(255, 255, 255, 0);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    -unity-slice-scale: 1px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+}
+
+.unity-text-field__input {
+    background-color: rgba(72, 72, 72, 0.16);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-image: none;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    -unity-font-style: normal;
+    font-size: 14px;
+}
+
+.unity-base-text-field__input--placeholder {
+    font-size: 20px;
+    -unity-text-align: upper-left;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    -unity-font-style: italic;
+    -unity-font-definition: url("project://database/Assets/DevsDaddy/GameShield/Visual/Fonts/tilda-sans_medium.ttf?fileID=12800000&guid=7e89a9917bf71854086f9e368e297987&type=3#tilda-sans_medium");
+    color: rgb(98, 64, 101);
+}
+
+#TextField > #unity-text-input > .unity-text-element {
+    font-size: 20px;
+    -unity-font-style: normal;
+    -unity-text-align: upper-left;
+    -unity-font-definition: url("project://database/Assets/DevsDaddy/GameShield/Visual/Fonts/tilda-sans_medium.ttf?fileID=12800000&guid=7e89a9917bf71854086f9e368e297987&type=3#tilda-sans_medium");
+    color: rgba(0, 0, 0, 0.59);
+}
