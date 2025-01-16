@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using DevsDaddy.GameShield.Core.Constants;
 using DevsDaddy.GameShield.Core.Modules;
 using DevsDaddy.GameShield.Core.Payloads;
@@ -31,6 +34,7 @@ namespace DevsDaddy.GameShield.Core
         // Loaded Modules
         private List<IShieldModule> loadedModules = new List<IShieldModule>();
         private readonly Dictionary<string, IEnumerator> currentCoroutines = new Dictionary<string, IEnumerator>();
+        private readonly ConcurrentDictionary<string, CancellationTokenSource> currentTasks = new();
 
         /// <summary>
         /// On GameShield Worker Awake
@@ -58,6 +62,8 @@ namespace DevsDaddy.GameShield.Core
             // Application Started Event
             EventMessenger.Main.Subscribe<RequestCoroutine>(OnRequestCoroutine);
             EventMessenger.Main.Subscribe<StopCoroutine>(OnStopCoroutine);
+            EventMessenger.Main.Subscribe<RequestTask>(OnRequestTask);
+            EventMessenger.Main.Subscribe<StopTask>(OnStopTask);
             EventMessenger.Main.Subscribe<ReportingPayload>(ProcessReportingWorker);
             EventMessenger.Main.Publish(new ApplicationStartedPayload {
                 Time = DateTime.Now
@@ -103,6 +109,8 @@ namespace DevsDaddy.GameShield.Core
         private void OnDestroy() {
             EventMessenger.Main.Unsubscribe<RequestCoroutine>(OnRequestCoroutine);
             EventMessenger.Main.Unsubscribe<StopCoroutine>(OnStopCoroutine);
+            EventMessenger.Main.Unsubscribe<RequestTask>(OnRequestTask);
+            EventMessenger.Main.Unsubscribe<StopTask>(OnStopTask);
             EventMessenger.Main.Unsubscribe<ReportingPayload>(ProcessReportingWorker);
             EventMessenger.Main.Publish(new ApplicationClosePayload {
                 IsQuitting = isQuitting,
@@ -277,6 +285,53 @@ namespace DevsDaddy.GameShield.Core
         private void RemoveAllCoroutines() {
             currentCoroutines.Clear();
             StopAllCoroutines();
+        }
+
+        /// <summary>
+        /// Handle Task Request with Async/Await
+        /// </summary>
+        /// <param name="payload"></param>
+        private async void OnRequestTask(RequestTask payload)
+        {
+            // Stop existing task if present
+            if (currentTasks.ContainsKey(payload.Id))
+            {
+                currentTasks[payload.Id].Cancel(); // Cancel the running task
+                currentTasks[payload.Id].Dispose();
+            }
+
+            // Create a new cancellation token for the task
+            var cts = new CancellationTokenSource();
+            currentTasks[payload.Id] = cts;
+
+            try
+            {
+                // Run the task and await its completion
+                await payload.TaskToRun(cts.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                Debug.Log($"Task {payload.Id} was canceled.");
+            }
+            finally
+            {
+                // Remove the task from the dictionary after completion or cancellation
+                currentTasks.TryRemove(payload.Id, out _);
+            }
+        }
+
+        /// <summary>
+        /// Handle Stop Task Request
+        /// </summary>
+        /// <param name="payload"></param>
+        private void OnStopTask(StopTask payload)
+        {
+            if (currentTasks.TryGetValue(payload.Id, out var cts))
+            {
+                cts.Cancel(); // Cancel the running task
+                cts.Dispose();
+                currentTasks.TryRemove(payload.Id, out _);
+            }
         }
 
         /// <summary>
